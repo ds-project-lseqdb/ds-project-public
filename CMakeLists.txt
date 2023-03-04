@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(Key-value-lseq VERSION 1.0)
-find_package(GTest CONFIG REQUIRED)
 SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17 -pthread")
+option(BuildGRPC "Whether GRPC should be build" OFF)
+option(UseGTest "Whether GoogleTest should be linked and test should be performed" OFF)
 
 add_executable(Key-value-lseq
         src/main.cpp
@@ -17,6 +18,14 @@ target_link_libraries(Key-value-lseq PUBLIC leveldb)
 add_subdirectory(third-party/yaml-cpp)
 target_link_libraries(Key-value-lseq PUBLIC yaml-cpp)
 
-enable_testing()
+if (BuildGRPC)
+    #Simply install gRPC
+    add_subdirectory(third-party/)
+endif()
 
-include(GoogleTest)
+#Using GTest is equivalent to performing testing
+if (UseGTest)
+    find_package(GTest CONFIG REQUIRED)
+    enable_testing()
+    include(GoogleTest)
+endif()
