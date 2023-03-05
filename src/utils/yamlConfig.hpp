@@ -1,17 +1,27 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
-#include "yaml-cpp/yaml.h"
+#include "grpcConfig.hpp"
 
 class YAMLConfig {
 public:
-    YAMLConfig(std::string s);
+    explicit YAMLConfig(std::string s);
 
-    YAML::Node get() const;
+    [[nodiscard]] int getId() const;
 
-    YAML::Node& getReference();
+    [[nodiscard]] std::string getDbFile() const;
+
+    [[nodiscard]] std::vector<std::string> getReplicas() const;
+
+    [[nodiscard]] GRPCConfig getGRPCConfig();
+
+    void addReplica(std::string newReplica);
 
 private:
-    YAML::Node value;
+    GRPCConfig grpcConfig;
+    std::string dbFilename;
+    std::vector<std::string> replicas;
+    int id;
 };
