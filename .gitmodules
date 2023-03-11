@@ -1,3 +1,6 @@
 [submodule "third-party/yaml-cpp"]
 	path = third-party/yaml-cpp
 	url = git@github.com:jbeder/yaml-cpp.git
+[submodule "third-party/leveldb"]
+	path = third-party/leveldb
+	url = git@github.com:Oanikulin/leveldb.git
