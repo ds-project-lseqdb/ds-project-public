@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "leveldb/db.h"
+#include "db/dbConnector.hpp"
 #include "utils/yamlConfig.hpp"
 
 int main(int argc, char** argv) {

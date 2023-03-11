@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(Key-value-lseq VERSION 1.0)
-SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17 -pthread")
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1z -pthread")
 option(BuildGRPC "Whether GRPC should be build" OFF)
 option(UseGTest "Whether GoogleTest should be linked and test should be performed" ON)
 
@@ -14,6 +14,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 add_executable(Key-value-lseq
         src/main.cpp
         src/utils/yamlConfig.cpp
+        src/db/dbConnector.cpp
         )
 
 #Setup leveldb
@@ -48,6 +49,20 @@ if (UseGTest)
     )
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tests/resources/config.yaml
             DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources)
+
+    add_executable(
+            baseDbTest
+            tests/dbTests/baseDbTest.cpp
+            src/utils/yamlConfig.cpp
+            src/db/dbConnector.cpp
+    )
+    target_link_libraries(
+            baseDbTest
+            GTest::gtest_main
+            yaml-cpp
+            leveldb
+            ${GTEST_LIBRARIES}
+    )
 
     include(GoogleTest)
 endif()
