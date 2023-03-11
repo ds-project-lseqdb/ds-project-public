@@ -31,55 +31,31 @@ dbConnector::~dbConnector()
 replyFormat dbConnector::put(std::string key, std::string value) {
     std::string realKey = generateNormalKey(std::move(key), selfId);
     auto [seq, s] = db->PutSequence(leveldb::WriteOptions(), realKey, value);
-    useconds_t delay = 100000;
-    while (true)
-    {
-        if (!s.ok()) {
-            return {0, s};
-        }
-        leveldb::Status intermediateStatus = db->Put(leveldb::WriteOptions(), generateGetseqKey(realKey), generateLseqKey(seq, selfId));
-        if (!intermediateStatus.ok()) {
-            return {0, intermediateStatus};
-        }
-        auto [secondSeq, s] = db->PutSequence(leveldb::WriteOptions(), generateLseqKey(seq, selfId), realKey);
-        if (secondSeq != seq + 2) {
-            usleep(delay + rand() % 100000);
-            auto [inSeq, inS] = db->DeleteSequence(leveldb::WriteOptions(), realKey);
-            seq = inSeq;
-            s = inS;
-            continue;
-        }
-        break;
+    if (!s.ok()) {
+        return {"", s};
     }
+    leveldb::Status intermediateStatus = db->Put(leveldb::WriteOptions(), generateGetseqKey(realKey), generateLseqKey(seq, selfId));
+    if (!intermediateStatus.ok()) {
+        return {"", intermediateStatus};
+    }
+    auto [secondSeq, st] = db->PutSequence(leveldb::WriteOptions(), generateLseqKey(seq, selfId), realKey);
 
-    return {generateLseqKey(seq, selfId), s};
+    return {generateLseqKey(seq, selfId), st};
 }
 
 replyFormat dbConnector::remove(std::string key) {
     std::string realKey = generateNormalKey(std::move(key), selfId);
     auto [seq, s] = db->DeleteSequence(leveldb::WriteOptions(), realKey);
-    useconds_t delay = 100000;
-    while (true)
-    {
-        if (!s.ok()) {
-            return {0, s};
-        }
-        leveldb::Status intermediateStatus = db->Put(leveldb::WriteOptions(), generateGetseqKey(realKey), generateLseqKey(seq, selfId));
-        if (!intermediateStatus.ok()) {
-            return {0, intermediateStatus};
-        }
-        auto [secondSeq, s] = db->DeleteSequence(leveldb::WriteOptions(), generateLseqKey(seq, selfId));
-        if (secondSeq != seq + 2) {
-            usleep(delay + rand() % 100000);
-            auto [inSeq, inS] = db->DeleteSequence(leveldb::WriteOptions(), realKey);
-            seq = inSeq;
-            s = inS;
-            continue;
-        }
-        break;
+    if (!s.ok()) {
+        return {"", s};
     }
+    leveldb::Status intermediateStatus = db->Put(leveldb::WriteOptions(), generateGetseqKey(realKey), generateLseqKey(seq, selfId));
+    if (!intermediateStatus.ok()) {
+        return {"", intermediateStatus};
+    }
+    auto [secondSeq, st] = db->DeleteSequence(leveldb::WriteOptions(), generateLseqKey(seq, selfId));
 
-    return {generateLseqKey(seq, selfId), s};
+    return {generateLseqKey(seq, selfId), st};
 }
 
 pureReplyValue dbConnector::get(std::string key) {
