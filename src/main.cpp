@@ -10,6 +10,8 @@ int main(int argc, char** argv) {
         return 1;
     }
     YAMLConfig config(argv[1]);
+    dbConnector db(config);
+    db.put("testval", "testdata");
     std::cout << "test main file" << std::endl;
     return 0;
 }

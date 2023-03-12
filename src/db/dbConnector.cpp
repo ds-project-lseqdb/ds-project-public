@@ -2,7 +2,6 @@
 
 #include <string>
 #include <sstream>
-#include <unistd.h>
 #include <iostream>
 #include <iomanip>
 #include <utility>
@@ -11,6 +10,7 @@
 #include "leveldb/db.h"
 #include "leveldb/write_batch.h"
 #include "src/utils/yamlConfig.hpp"
+#include "src/db/comparator.hpp"
 
 dbConnector::dbConnector(YAMLConfig config)
 {
@@ -18,6 +18,7 @@ dbConnector::dbConnector(YAMLConfig config)
     std::string filename = config.getDbFile();
     leveldb::Options options;
     options.create_if_missing = true;
+    options.comparator = &(leveldb::GLOBAL_COMPARATOR);
     db = nullptr;
     leveldb::Status status = leveldb::DB::Open(options, filename, &db);
     assert(status.ok());
@@ -110,14 +111,13 @@ pureReplyValue dbConnector::get(std::string key, int id) {
     return {lseq, s, res};
 }
 
-//UNTESTED
 //UNSAFE, this method can override existing value
 //Should never be called with unchecked value
 //Argument should contain precise keys from another replica
 leveldb::Status
 dbConnector::putBatch(batchValues keyValuePairs) {
     leveldb::WriteBatch batch;
-    for (auto [lseq, key, value] : keyValuePairs) {
+    for (const auto& [lseq, key, value] : keyValuePairs) {
         batch.Put(lseq, key);
         batch.Put(key, value);
         batch.Put(generateGetseqKey(key), lseq);
@@ -126,15 +126,18 @@ dbConnector::putBatch(batchValues keyValuePairs) {
     return s;
 }
 
-//UNTESTED
 replyBatchFormat dbConnector::getByLseq(leveldb::SequenceNumber seq, int id, int limit) {
+    return getByLseq(generateLseqKey(seq, id), limit);
+}
+
+replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
     batchValues res;
     int cnt = -1;
     leveldb::ReadOptions options;
     options.snapshot = db->GetSnapshot();
     leveldb::Iterator* it = db->NewIterator(options);
-    for (it->Seek(generateLseqKey(seq, id));
-         it->Valid() && cnt <= limit;
+    for (it->Seek(lseq);
+         it->Valid() && cnt <= limit && lseqToReplicaId(it->key().ToString()) == lseqToReplicaId(lseq);
          it->Next())
     {
         if (limit != -1)
@@ -152,7 +155,6 @@ replyBatchFormat dbConnector::getByLseq(leveldb::SequenceNumber seq, int id, int
     delete it;
     return {status, res};
 }
-
 std::string dbConnector::generateLseqKey(leveldb::SequenceNumber seq, int id) {
     std::string lseqNumber = idToString(id);
     lseqNumber[0] = '#';
@@ -173,4 +175,8 @@ std::string dbConnector::idToString(int id) {
 std::string dbConnector::generateGetseqKey(std::string realKey) {
     realKey[0] = '@';
     return realKey;
+}
+
+std::string dbConnector::lseqToReplicaId(const std::string& lseq) {
+    return lseq.substr(0, 10);
 }
