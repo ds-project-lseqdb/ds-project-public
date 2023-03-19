@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package lseqdb;
+
+message ReplicaKey {
+  string key = 1;
+  optional int32 replica_id = 2; // if not defined, then use selfId
+}
+
+message Key {
+  string key = 1;
+}
+
+message Value {
+  string value = 1;
+}
+
+message LSeq {
+  string lseq = 1;
+}
+
+message PutRequest {
+  string key = 1;
+  string value = 2;
+}
+
+message SeekGetRequest {
+  string lseq = 1;
+  optional uint32 limit = 2; // if not defined, then unlimited
+}
+
+message DBItems {
+  message DbItem {
+    string lseq = 1;
+    string key = 2;
+    string value = 3;
+  }
+
+  repeated DbItem items = 1;
+}
+
+service LSeqDatabase {
+//  Database API
+  rpc GetValue(ReplicaKey) returns (Value) {}
+  rpc Put(PutRequest) returns (LSeq) {}
+  rpc Delete(Key) returns (google.protobuf.Empty) {}
+  rpc SeekGet(SeekGetRequest) returns (DBItems) {}
+
+//  System calls for synchronization
+  rpc SyncGet_(SyncGetRequest) returns (LSeq) {}
+  rpc SyncPut_(DBItems) returns (google.protobuf.Empty) {}
+}
+
+message SyncGetRequest {
+  int32 replica_id = 1;
+}
