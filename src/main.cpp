@@ -2,6 +2,7 @@
 
 #include "db/dbConnector.hpp"
 #include "utils/yamlConfig.hpp"
+#include <grpc/grpc.h>
 
 int main(int argc, char** argv) {
     if (argc != 2)

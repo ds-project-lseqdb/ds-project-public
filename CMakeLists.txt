@@ -1,14 +1,19 @@
-cmake_minimum_required(VERSION 3.10)
+project(Key-value-lseq)
 
-project(Key-value-lseq VERSION 1.0)
-SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1z -pthread")
+cmake_minimum_required(VERSION 3.15)
+
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17 -pthread")
 
 #Needed to make custom comparator (see https://github.com/google/leveldb/issues/891)
 STRING(REGEX REPLACE "-frtti" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -DGTEST_HAS_RTTI=0 ")
+SET(CMAKE_CXX_FLAGS "-fno-rtti -DGTEST_HAS_RTTI=0 -std=c++17 -fno-omit-frame-pointer")
 
-option(BuildGRPC "Whether GRPC should be build" OFF)
+option(BuildGRPC "Whether GRPC should be build" ON)
 option(UseGTest "Whether GoogleTest should be linked and test should be performed" ON)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 #Fastens build a lot and simply gtest usage
 set(LEVELDB_BUILD_TESTS OFF)
@@ -20,6 +25,8 @@ add_executable(Key-value-lseq
         src/main.cpp
         src/utils/yamlConfig.cpp
         src/db/dbConnector.cpp
+        src/proto-src/lseqDb.grpc.pb.cc
+        src/proto-src/lseqDb.pb.cc
         )
 
 #Setup leveldb
@@ -31,30 +38,29 @@ add_subdirectory(third-party/yaml-cpp)
 target_link_libraries(Key-value-lseq PUBLIC yaml-cpp)
 
 if (BuildGRPC)
-    #Simply install gRPC
-    add_subdirectory(third-party/)
+    include(FetchContent)
+    FetchContent_Declare(
+            gRPC
+            GIT_REPOSITORY https://github.com/grpc/grpc
+            GIT_TAG        v1.52.1
+    )
+    FetchContent_MakeAvailable(gRPC)
+    target_link_libraries(Key-value-lseq PUBLIC grpc++)
+
+    set(gRPC_BUILD_TESTS OFF)
 endif()
 
 #Using GTest is equivalent to performing testing
 if (UseGTest)
-
-    configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-    execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download"
-            )
-    execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download"
-            )
-
-    # Prevent GoogleTest from overriding our compiler/linker options
-    # when building with Visual Studio
+    include(FetchContent)
+    FetchContent_Declare(
+            googletest
+            GIT_REPOSITORY https://github.com/google/googletest
+            GIT_TAG        v1.13.0
+    )
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-    # Add googletest directly to our build. This adds the following targets:
-    # gtest, gtest_main, gmock and gmock_main
-    add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src"
-            "${CMAKE_BINARY_DIR}/googletest-build"
-            )
+    FetchContent_MakeAvailable(googletest)
 
     enable_testing()
 
