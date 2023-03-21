@@ -2,6 +2,7 @@
 
 #include <string>
 #include <utility>
+#include <vector>
 #include <variant>
 
 #include "leveldb/db.h"
@@ -38,6 +39,8 @@ public:
 
     replyBatchFormat getByLseq(const std::string& lseq, int limit = -1);
 
+    int sequenceNumberForReplica(int id) const;
+
     static std::string generateGetseqKey(std::string realKey);
 
     static std::string generateLseqKey(leveldb::SequenceNumber seq, int id);
@@ -51,6 +54,7 @@ public:
     static std::string lseqToReplicaId(const std::string& lseq);
 
 private:
+    std::vector<int> seqCount;
     leveldb::DB* db{};
 
     int selfId;

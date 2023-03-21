@@ -3,3 +3,4 @@ GRPCServer:
 DbFilename: db
 ReplicaList: ['localhost:12', 'localhost:13', 'localhost:14']
 ReplicaId: 2
+MaxReplicaId: 10

@@ -22,6 +22,14 @@ TEST(baseDbTest, baseCorrectness) {
     EXPECT_TRUE(std::get<1>(db.get("asghsqag")).IsNotFound());
 }
 
+TEST(baseDbTest, putSeqResult) {
+    YAMLConfig config("resources/config.yaml");
+    dbConnector db(std::move(config));
+    std::string firstLseq = db.put("aasgas", "bsagas").first;
+    std::string secondLseq = db.put("gsagaa", "bsagas").first;
+    EXPECT_TRUE(firstLseq < secondLseq);
+}
+
 TEST(baseDbTest, putsAndGets) {
     YAMLConfig config("resources/config.yaml");
     dbConnector db(std::move(config));

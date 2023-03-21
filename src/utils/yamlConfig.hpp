@@ -17,6 +17,8 @@ public:
 
     [[nodiscard]] GRPCConfig getGRPCConfig() const;
 
+    [[nodiscard]] int getMaxReplicaId() const;
+
     void addReplica(std::string newReplica);
 
 private:
@@ -24,4 +26,5 @@ private:
     std::string dbFilename;
     std::vector<std::string> replicas;
     int id;
+    int maxReplicaId;
 };

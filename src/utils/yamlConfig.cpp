@@ -10,8 +10,10 @@ YAMLConfig::YAMLConfig(std::string s) {
     grpcConfig = value[ConfigConstant::GRPC_VALUE_NAME].as<GRPCConfig>();
     //maybe assert id value
     id = value[ConfigConstant::ID].as<int>();
+    maxReplicaId = value[ConfigConstant::MAX_REPLICA_ID].as<int>();
     dbFilename = value[ConfigConstant::DB_FILENAME].as<std::string>();
     assert(value[ConfigConstant::REPLICA_LIST].Type() == YAML::NodeType::Sequence);
+    assert(maxReplicaId >= id);
     replicas.reserve(value[ConfigConstant::REPLICA_LIST].size());
     for (auto it : value[ConfigConstant::REPLICA_LIST])
     {
@@ -23,6 +25,9 @@ int YAMLConfig::getId() const {
     return id;
 }
 
+int YAMLConfig::getMaxReplicaId() const {
+    return maxReplicaId;
+}
 std::string YAMLConfig::getDbFile() const {
     return dbFilename;
 }

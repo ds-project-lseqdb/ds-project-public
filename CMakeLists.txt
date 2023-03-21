@@ -1,6 +1,6 @@
-project(Key-value-lseq)
-
 cmake_minimum_required(VERSION 3.15)
+
+project(Key-value-lseq)
 
 SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17 -pthread")
 

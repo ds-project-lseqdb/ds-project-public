@@ -10,6 +10,7 @@ TEST(configTest, GeneralConfig) {
     YAMLConfig config("resources/config.yaml");
     EXPECT_EQ(config.getDbFile(), "db");
     EXPECT_EQ(config.getId(), 2);
+    EXPECT_EQ(config.getMaxReplicaId(), 10);
     EXPECT_EQ(config.getReplicas(), std::vector<std::string>({"localhost:12", "localhost:13", "localhost:14"}));
 }
 

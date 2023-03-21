@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <utility>
+#include <vector>
 #include <variant>
 
 #include "leveldb/db.h"
@@ -15,6 +16,7 @@
 dbConnector::dbConnector(YAMLConfig config)
 {
     selfId = config.getId();
+    seqCount = std::vector<int>(config.getMaxReplicaId());
     std::string filename = config.getDbFile();
     leveldb::Options options;
     options.create_if_missing = true;
@@ -27,6 +29,10 @@ dbConnector::dbConnector(YAMLConfig config)
 dbConnector::~dbConnector()
 {
     delete db;
+}
+
+int dbConnector::sequenceNumberForReplica(int id) const {
+    return seqCount[id];
 }
 
 replyFormat dbConnector::put(std::string key, std::string value) {

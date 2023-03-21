@@ -5,8 +5,8 @@
 Clone repository with all submodules `git clone --recurse-submodules https://github.com/Oanikulin/ds-project-dev.git`
 
 From cloned repository, call  `mkdir build && cd build && cmake ..`. All dependencies are included automatically.
-After that code can be build using `make`.
-Tested under GCC 7.5 compiler and Ubuntu 18.04 to be (probably) correct. Requires at least C++17.
+After that code can be build using `make`. Requires at least C++17. 
+First cmake build can fail. It is seminormal. In such case just reinvoke `cmake ..`.
 
 ## Usage
 
@@ -17,4 +17,4 @@ Proto files are provided as future API in `/proto/lseqDb.proto`
 
 ## Testing
 
-Application uses GTest, test can also be used to check database behavior. They might be mulfunctional under different compiler or OS 
+Application uses GTest, test can also be used to check database behavior and usage.

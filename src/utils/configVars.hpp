@@ -4,6 +4,7 @@
 
 namespace ConfigConstant {
     static const std::string GRPC_VALUE_NAME("GRPCServer");
+    static const std::string MAX_REPLICA_ID("MaxReplicaId");
     static const std::string ID("ReplicaId");
     static const std::string REPLICA_LIST("ReplicaList");
     static const std::string DB_FILENAME("DbFilename");
