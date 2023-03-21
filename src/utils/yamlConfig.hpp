@@ -15,7 +15,7 @@ public:
 
     [[nodiscard]] std::vector<std::string> getReplicas() const;
 
-    [[nodiscard]] GRPCConfig getGRPCConfig();
+    [[nodiscard]] GRPCConfig getGRPCConfig() const;
 
     void addReplica(std::string newReplica);
 

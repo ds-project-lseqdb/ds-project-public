@@ -35,6 +35,6 @@ void YAMLConfig::addReplica(std::string newReplica) {
     replicas.push_back(std::move(newReplica));
 }
 
-GRPCConfig YAMLConfig::getGRPCConfig() {
+GRPCConfig YAMLConfig::getGRPCConfig() const {
     return grpcConfig;
 }

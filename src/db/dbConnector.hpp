@@ -42,6 +42,8 @@ public:
 
     static std::string generateLseqKey(leveldb::SequenceNumber seq, int id);
 
+    static std::string stampedKeyToRealKey(const std::string& stampedKey);
+
     static std::string generateNormalKey(std::string key, int id);
 
     static std::string idToString(int id);

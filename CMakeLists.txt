@@ -27,6 +27,7 @@ add_executable(Key-value-lseq
         src/db/dbConnector.cpp
         src/proto-src/lseqDb.grpc.pb.cc
         src/proto-src/lseqDb.pb.cc
+        src/server/grpc-server.cpp
         )
 
 #Setup leveldb
@@ -44,10 +45,11 @@ if (BuildGRPC)
             GIT_REPOSITORY https://github.com/grpc/grpc
             GIT_TAG        v1.52.1
     )
+    set(protobuf_BUILD_TESTS OFF)
+    set(gRPC_BUILD_TESTS OFF)
+
     FetchContent_MakeAvailable(gRPC)
     target_link_libraries(Key-value-lseq PUBLIC grpc++)
-
-    set(gRPC_BUILD_TESTS OFF)
 endif()
 
 #Using GTest is equivalent to performing testing

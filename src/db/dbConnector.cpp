@@ -155,10 +155,15 @@ replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
     delete it;
     return {status, res};
 }
+
 std::string dbConnector::generateLseqKey(leveldb::SequenceNumber seq, int id) {
     std::string lseqNumber = idToString(id);
     lseqNumber[0] = '#';
     return  lseqNumber + std::to_string(seq);
+}
+
+std::string dbConnector::stampedKeyToRealKey(const std::string& stampedKey) {
+    return stampedKey.substr(10);
 }
 
 std::string dbConnector::generateNormalKey(std::string key, int id) {
