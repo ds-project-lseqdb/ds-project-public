@@ -40,6 +40,10 @@ public:
 
     replyBatchFormat getByLseq(const std::string& lseq, int limit = -1);
 
+    replyBatchFormat getValuesForKey(const std::string& key, leveldb::SequenceNumber seq, int id, int limit = -1);
+
+    replyBatchFormat getAllValuesForKey(const std::string& key, int id, int limit = -1);
+
     leveldb::SequenceNumber sequenceNumberForReplica(int id);
 
     static std::string generateGetseqKey(std::string realKey);
@@ -55,6 +59,8 @@ public:
     static std::string lseqToReplicaId(const std::string& lseq);
 
     static leveldb::SequenceNumber lseqToSeq(const std::string& lseq);
+
+    static leveldb::SequenceNumber getFullKey(const std::string& key, leveldb::SequenceNumber seq, int id);
 
 private:
     std::mutex mx;

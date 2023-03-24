@@ -1,10 +1,12 @@
 #include "dbConnector.hpp"
 
+#include <chrono>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
 #include <mutex>
+#include <thread>
 #include <utility>
 #include <vector>
 #include <variant>
@@ -13,6 +15,9 @@
 #include "leveldb/write_batch.h"
 #include "src/utils/yamlConfig.hpp"
 #include "src/db/comparator.hpp"
+#include "src/db/fullKey.hpp"
+
+using namespace std::chrono_literals;
 
 dbConnector::dbConnector(YAMLConfig config)
 {
@@ -40,20 +45,22 @@ leveldb::SequenceNumber dbConnector::sequenceNumberForReplica(int id) {
 }
 
 replyFormat dbConnector::put(std::string key, std::string value) {
-    std::string realKey = generateNormalKey(std::move(key), selfId);
+    std::string realKey = generateNormalKey(key, selfId);
     auto [seq, s] = db->PutSequence(leveldb::WriteOptions(), realKey, value);
     if (!s.ok()) {
         return {"", s};
     }
-    leveldb::Status intermediateStatus = db->Put(leveldb::WriteOptions(), generateGetseqKey(realKey), generateLseqKey(seq, selfId));
-    if (!intermediateStatus.ok()) {
-        return {"", intermediateStatus};
+    leveldb::WriteBatch batch;
+    batch.Put(generateGetseqKey(realKey), generateLseqKey(seq, selfId));
+    batch.Put(generateLseqKey(seq, selfId), realKey);
+    batch.Put(FullKey(key, seq, selfId).getFullKey(), value);
+    leveldb::Status st = db->Write(leveldb::WriteOptions(), &batch);
+    if (!st.ok()) {
+        return {"", st};
     }
-    auto [secondSeq, st] = db->PutSequence(leveldb::WriteOptions(), generateLseqKey(seq, selfId), realKey);
-
     {
         std::lock_guard lock(mx);
-        seqCount[selfId] = secondSeq;
+        seqCount[selfId] = seq;
     }
     return {generateLseqKey(seq, selfId), st};
 }
@@ -107,6 +114,7 @@ pureReplyValue dbConnector::get(std::string key) {
             return {"", s, ""};
         }
         if (requestedKey != realKey) {
+            std::this_thread::sleep_for(100ms);
             continue;
         }
         return {subSearchKey, s, value};
@@ -140,8 +148,8 @@ dbConnector::putBatch(batchValues keyValuePairs) {
         batch.Put(key, value);
         batch.Put(generateGetseqKey(key), lseq);
         int replicaId = std::stoi(lseqToReplicaId(lseq));
-        std::cerr << replicaId << " replica " << lseq << " lseq\n";
         leveldb::SequenceNumber seq = lseqToSeq(lseq);
+        batch.Put(FullKey(stampedKeyToRealKey(key), seq, replicaId).getFullKey(), value);
         {
             std::lock_guard lk(mx);
             //if the order is wrong it is not the problem of method
@@ -156,12 +164,40 @@ replyBatchFormat dbConnector::getByLseq(leveldb::SequenceNumber seq, int id, int
     return getByLseq(generateLseqKey(seq, id), limit);
 }
 
+replyBatchFormat dbConnector::getValuesForKey(const std::string& key, leveldb::SequenceNumber seq, int id, int limit) {
+    batchValues res;
+    int cnt = -1;
+    leveldb::ReadOptions options;
+    options.snapshot = db->GetSnapshot();
+    std::unique_ptr<leveldb::Iterator> it(db->NewIterator(options));
+    FullKey searchValue = FullKey(key, seq, id);
+    for (it->Seek(searchValue.getFullKey());
+         it->Valid() && cnt <= limit;
+         it->Next())
+    {
+        FullKey currentKey(it->key().ToString());
+        if (currentKey.getKey() != key)
+            break;
+        int replicaId = currentKey.getReplicaId();
+        if (limit != -1)
+            ++cnt;
+        res.push_back({generateLseqKey(currentKey.getSeq(), replicaId), generateNormalKey(key, replicaId), it->value().ToString()});
+    }
+    leveldb::Status status = it->status();
+    db->ReleaseSnapshot(options.snapshot);
+    return {status, res};
+}
+
+replyBatchFormat dbConnector::getAllValuesForKey(const std::string& key, int id, int limit) {
+    return getValuesForKey(key, 0, id, limit);
+}
+
 replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
     batchValues res;
     int cnt = -1;
     leveldb::ReadOptions options;
     options.snapshot = db->GetSnapshot();
-    leveldb::Iterator* it = db->NewIterator(options);
+    std::unique_ptr<leveldb::Iterator> it(db->NewIterator(options));
     for (it->Seek(lseq);
          it->Valid() && cnt <= limit && lseqToReplicaId(it->key().ToString()) == lseqToReplicaId(lseq);
          it->Next())
@@ -172,13 +208,14 @@ replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
         realKey[0] = '0';
         std::string  realValue;
         auto s = db->Get(options, realKey, &realValue);
-        if (!s.ok())
+        if (!s.ok()) {
+            db->ReleaseSnapshot(options.snapshot);
             return {s, res};
+        }
         res.push_back({it->key().ToString(), it->value().ToString(), realValue});
     }
     leveldb::Status status = it->status();
     db->ReleaseSnapshot(options.snapshot);
-    delete it;
     return {status, res};
 }
 

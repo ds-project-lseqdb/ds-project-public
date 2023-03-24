@@ -107,4 +107,15 @@ if (UseGTest)
             yaml-cpp
             gtest
     )
+
+    add_executable(
+            fullKeyTest
+            tests/dbTests/fullKeyTest.cpp
+    )
+    target_link_libraries(
+            fullKeyTest
+            leveldb
+            gtest_main
+            gtest
+    )
 endif()

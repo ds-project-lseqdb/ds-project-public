@@ -60,3 +60,30 @@ TEST(groupOperationTest, lseqSeek) {
     }
     EXPECT_EQ(repl.second.size(), 0);
 }
+
+TEST(groupOperationTest, groupKeyGet) {
+    YAMLConfig config("resources/config.yaml");
+    dbConnector db(std::move(config));
+    EXPECT_TRUE(db.putBatch({
+        {dbConnector::generateLseqKey(1000, 2), dbConnector::generateNormalKey("abcde", 2), "val"},
+        {dbConnector::generateLseqKey(2000, 2), dbConnector::generateNormalKey("abcde", 2), "val2"},
+        {dbConnector::generateLseqKey(3000, 2), dbConnector::generateNormalKey("abcde", 2), "val3"},
+        {dbConnector::generateLseqKey(1200, 2), dbConnector::generateNormalKey("abcf", 2), "val4"},
+        {dbConnector::generateLseqKey(1500, 3), dbConnector::generateNormalKey("abcde", 2), "val5"}
+    }).ok());
+
+    replyBatchFormat repl = db.getAllValuesForKey("abcde", 0);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 4);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "val");
+    EXPECT_EQ(std::get<2>(repl.second[1]), "val5");
+    EXPECT_EQ(std::get<2>(repl.second[2]), "val2");
+    EXPECT_EQ(std::get<2>(repl.second[3]), "val3");
+
+    repl = db.getValuesForKey("abcde", 1001, 12);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 3);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "val5");
+    EXPECT_EQ(std::get<2>(repl.second[1]), "val2");
+    EXPECT_EQ(std::get<2>(repl.second[2]), "val3");
+}

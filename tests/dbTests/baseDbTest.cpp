@@ -26,9 +26,9 @@ TEST(baseDbTest, putSeqResult) {
     YAMLConfig config("resources/config.yaml");
     dbConnector db(std::move(config));
     std::string firstLseq = db.put("aasgas", "bsagas").first;
-    EXPECT_EQ(dbConnector::lseqToSeq(firstLseq) + 2, db.sequenceNumberForReplica(2));
+    EXPECT_EQ(dbConnector::lseqToSeq(firstLseq), db.sequenceNumberForReplica(2));
     std::string secondLseq = db.put("gsagaa", "bsagas").first;
-    EXPECT_EQ(dbConnector::lseqToSeq(secondLseq) + 2, db.sequenceNumberForReplica(2));
+    EXPECT_EQ(dbConnector::lseqToSeq(secondLseq), db.sequenceNumberForReplica(2));
     EXPECT_TRUE(firstLseq < secondLseq);
 }
 
