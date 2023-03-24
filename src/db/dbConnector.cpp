@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <mutex>
 #include <utility>
 #include <vector>
 #include <variant>
@@ -16,7 +17,7 @@
 dbConnector::dbConnector(YAMLConfig config)
 {
     selfId = config.getId();
-    seqCount = std::vector<int>(config.getMaxReplicaId());
+    seqCount = std::vector<leveldb::SequenceNumber>(config.getMaxReplicaId());
     std::string filename = config.getDbFile();
     leveldb::Options options;
     options.create_if_missing = true;
@@ -31,7 +32,10 @@ dbConnector::~dbConnector()
     delete db;
 }
 
-int dbConnector::sequenceNumberForReplica(int id) const {
+leveldb::SequenceNumber dbConnector::sequenceNumberForReplica(int id) {
+    //better to rewrite mutex to atomics or at least sharded mutex
+    //but not now
+    std::lock_guard lock(mx);
     return seqCount[id];
 }
 
@@ -47,6 +51,10 @@ replyFormat dbConnector::put(std::string key, std::string value) {
     }
     auto [secondSeq, st] = db->PutSequence(leveldb::WriteOptions(), generateLseqKey(seq, selfId), realKey);
 
+    {
+        std::lock_guard lock(mx);
+        seqCount[selfId] = secondSeq;
+    }
     return {generateLseqKey(seq, selfId), st};
 }
 
@@ -62,6 +70,10 @@ replyFormat dbConnector::remove(std::string key) {
     }
     auto [secondSeq, st] = db->DeleteSequence(leveldb::WriteOptions(), generateLseqKey(seq, selfId));
 
+    {
+        std::lock_guard lock(mx);
+        seqCount[selfId] = secondSeq;
+    }
     return {generateLseqKey(seq, selfId), st};
 }
 
@@ -127,6 +139,14 @@ dbConnector::putBatch(batchValues keyValuePairs) {
         batch.Put(lseq, key);
         batch.Put(key, value);
         batch.Put(generateGetseqKey(key), lseq);
+        int replicaId = std::stoi(lseqToReplicaId(lseq));
+        std::cerr << replicaId << " replica " << lseq << " lseq\n";
+        leveldb::SequenceNumber seq = lseqToSeq(lseq);
+        {
+            std::lock_guard lk(mx);
+            //if the order is wrong it is not the problem of method
+            seqCount[replicaId] = std::max(seqCount[replicaId], seq);
+        }
     }
     leveldb::Status s = db->Write(leveldb::WriteOptions(), &batch);
     return s;
@@ -189,5 +209,9 @@ std::string dbConnector::generateGetseqKey(std::string realKey) {
 }
 
 std::string dbConnector::lseqToReplicaId(const std::string& lseq) {
-    return lseq.substr(0, 10);
+    return lseq.substr(1, 9);
+}
+
+leveldb::SequenceNumber dbConnector::lseqToSeq(const std::string& lseq) {
+    return std::stoll(lseq.substr(10));
 }

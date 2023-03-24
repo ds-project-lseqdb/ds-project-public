@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <mutex>
 #include <utility>
 #include <vector>
 #include <variant>
@@ -39,7 +40,7 @@ public:
 
     replyBatchFormat getByLseq(const std::string& lseq, int limit = -1);
 
-    int sequenceNumberForReplica(int id) const;
+    leveldb::SequenceNumber sequenceNumberForReplica(int id);
 
     static std::string generateGetseqKey(std::string realKey);
 
@@ -53,8 +54,11 @@ public:
 
     static std::string lseqToReplicaId(const std::string& lseq);
 
+    static leveldb::SequenceNumber lseqToSeq(const std::string& lseq);
+
 private:
-    std::vector<int> seqCount;
+    std::mutex mx;
+    std::vector<leveldb::SequenceNumber> seqCount;
     leveldb::DB* db{};
 
     int selfId;

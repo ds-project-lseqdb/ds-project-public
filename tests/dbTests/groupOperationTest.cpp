@@ -24,6 +24,8 @@ TEST(groupOperationTest, baseGroupInsert) {
     EXPECT_EQ(std::get<2>(db.get("ab2", 1)), "val2");
     EXPECT_EQ(std::get<2>(db.get("abc", 1)), "valc");
     EXPECT_EQ(std::get<2>(db.get("ab", 3)), "val3");
+    EXPECT_EQ(16, db.sequenceNumberForReplica(1));
+    EXPECT_EQ(19, db.sequenceNumberForReplica(3));
     EXPECT_TRUE(std::get<1>(db.get("ab", 2)).IsNotFound());
 }
 
