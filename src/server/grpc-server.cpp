@@ -1,6 +1,5 @@
 #include "grpc-server.h"
 
-#include <grpcpp/channel.h>
 #include <grpcpp/client_context.h>
 #include <grpcpp/create_channel.h>
 #include <grpcpp/security/credentials.h>
@@ -9,6 +8,10 @@
 #include <numeric>
 #include <algorithm>
 #include <random>
+#include <thread>
+#include <chrono>
+
+using namespace std::chrono_literals;
 
 LSeqDatabaseImpl::LSeqDatabaseImpl(const YAMLConfig& config, dbConnector* database) : db(database), cfg(config) {
     syncMxs_.resize(config.getMaxReplicaId());
@@ -38,9 +41,15 @@ Status LSeqDatabaseImpl::Put(ServerContext* context, const PutRequest* request, 
 }
 
 Status LSeqDatabaseImpl::SeekGet(ServerContext* context, const SeekGetRequest* request, DBItems* response) {
-    auto res = db->getByLseq(request->lseq(), request->has_limit()
-        ? static_cast<int>(request->limit())
-        : -1);
+    replyBatchFormat res;
+    int limit = request->has_limit() ? static_cast<int>(request->limit()) : -1;
+    const auto& lseq = request->lseq();
+    if (request->has_key()) {
+        res = db->getValuesForKey(request->key(), dbConnector::lseqToSeq(lseq), std::stoi(dbConnector::lseqToReplicaId(lseq)), limit);
+    } else {
+        res = db->getByLseq(lseq, limit);
+    }
+
     if (!res.first.ok()) {
         return {grpc::StatusCode::UNAVAILABLE, res.first.ToString()};
     }
@@ -63,13 +72,9 @@ Status LSeqDatabaseImpl::SyncPut_(ServerContext* context, const DBItems* request
     std::lock_guard<std::mutex> lockGuard(syncMxs_[request->replica_id()]);
     batchValues batch;
     batch.reserve(request->items_size());
-    std::cerr << "Got batch from " << request->replica_id() << std::endl;
-    std::cerr << "Items:" << std::endl;
     for (const auto& item : request->items()) {
         batch.emplace_back(item.lseq(), item.key(), item.value());
-        std::cerr << "lseq=" << item.lseq() << "; key=" << item.key() << "; value=" << item.value() << std::endl;
     }
-    std::cerr << std::endl;
     auto res = db->putBatch(batch);
     if (!res.ok()) {
         return {grpc::StatusCode::ABORTED, res.ToString()};
@@ -98,6 +103,7 @@ std::string GetMaxLSeqFromRemoteReplica(const std::unique_ptr<LSeqDatabase::Stub
 
     Status status = client->SyncGet_(&context, request, &response);
     if (!status.ok()) {
+        std::cerr << status.error_message() << std::endl;
         return "";
     }
     return response.lseq();
@@ -119,7 +125,6 @@ DBItems DumpBatch(dbConnector* database, const std::string& lseq) {
 }
 
 bool SendNewBatch(const std::unique_ptr<LSeqDatabase::Stub>& client, const DBItems& batch) {
-    std::cerr << "Sending new batch with size=" << batch.items_size() << std::endl;
     ClientContext context;
     google::protobuf::Empty response;
     auto deadline = std::chrono::system_clock::now() + std::chrono::milliseconds(500);
@@ -127,6 +132,7 @@ bool SendNewBatch(const std::unique_ptr<LSeqDatabase::Stub>& client, const DBIte
 
     Status status = client->SyncPut_(&context, batch, &response);
     if (!status.ok()) {
+        std::cerr << status.error_message() << std::endl;
         return false;
     }
     return true;
@@ -146,12 +152,14 @@ void SyncLoop(const YAMLConfig& config, dbConnector* database) {
     std::shuffle(replicaIds.begin(), replicaIds.end(), rnd);
     std::shuffle(syncOrder.begin(), syncOrder.end(), rnd);
 
+    // iterate over neighboring replicas in random order
     for (auto i : replicaIds) {
         // Connect to remote replica;
         auto channel = grpc::CreateChannel(replicas[i], grpc::InsecureChannelCredentials());
 
         std::unique_ptr<LSeqDatabase::Stub> client(LSeqDatabase::NewStub(channel));
 
+        // iterate over known replicas in random order
         for (auto id : syncOrder) {
             auto maxSeq = database->sequenceNumberForReplica(id);
             if (maxSeq < 1) {
@@ -159,24 +167,30 @@ void SyncLoop(const YAMLConfig& config, dbConnector* database) {
                 continue;
             }
             auto remoteLSeq = GetMaxLSeqFromRemoteReplica(client, id);
-            std::cerr << "maxSeq=" << maxSeq << " maxRemoteLSeq=" << remoteLSeq << " for id=" << id << std::endl;
             if (remoteLSeq.empty()) {
                 // error
-                std::cerr << "Cannot get maxLSeq for " << id << " from " << replicas[i] << std::endl;
+                std::cerr << "Failed to get maxLSeq(" << id << ") from " << replicas[i] << std::endl;
                 continue;
             }
             auto remoteSeq = dbConnector::lseqToSeq(remoteLSeq);
             if (maxSeq <= remoteSeq) {
                 // No new data
                 continue;
+            } else {
+                std::cout << "Trying to sync data from " << id << " with " << replicas[i] << "\n";
+                std::cout << "Current localMaxSeq(" << id << ")=" << maxSeq << "; "
+                          << "remoteMaxSeq(" << replicas[i] << ", " << id << ")=" << remoteSeq << std::endl;
             }
 
             auto newBatch = DumpBatch(database, remoteLSeq);
-            newBatch.set_replica_id(id);
-            if (!SendNewBatch(client, newBatch)) {
-                std::cerr << "Synchronization data from " << id << " with replica_id=" << replicas[i] << " failed" << std::endl;
-            } else {
-                std::cerr << "Sync data from " << id << " with " << replicas[i] << " successfully" << std::endl;
+            if (newBatch.items_size()) {
+                newBatch.set_replica_id(id);
+                if (!SendNewBatch(client, newBatch)) {
+                    std::cerr << "Failed to send batch to " << replicas[i] << std::endl;
+                } else {
+                    std::cout << "Data has been successfully synchronized" << std::endl;
+                }
+                std::this_thread::sleep_for(100ms);
             }
         }
     }

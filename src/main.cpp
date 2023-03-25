@@ -20,8 +20,7 @@ int main(int argc, char** argv) {
     std::thread server([config, &database](){ RunServer(config, &database); });
 
     while (true) {
-        std::this_thread::sleep_for(15000ms);
-//        std::cout << "tick sync" << std::endl;
+        std::this_thread::sleep_for(2000ms);
         SyncLoop(config, &database);
     }
 

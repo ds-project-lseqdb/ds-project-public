@@ -1,0 +1,6 @@
+GRPCServer:
+  Port: 8003
+DbFilename: db3
+ReplicaList: ["localhost:8002"]
+ReplicaId: 3
+MaxReplicaId: 3

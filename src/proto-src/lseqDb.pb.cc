@@ -94,6 +94,7 @@ PROTOBUF_CONSTEXPR SeekGetRequest::SeekGetRequest(
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.lseq_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.key_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.limit_)*/0u} {}
 struct SeekGetRequestDefaultTypeInternal {
   PROTOBUF_CONSTEXPR SeekGetRequestDefaultTypeInternal()
@@ -198,9 +199,11 @@ const uint32_t TableStruct_lseqDb_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::lseqdb::SeekGetRequest, _impl_.lseq_),
+  PROTOBUF_FIELD_OFFSET(::lseqdb::SeekGetRequest, _impl_.key_),
   PROTOBUF_FIELD_OFFSET(::lseqdb::SeekGetRequest, _impl_.limit_),
   ~0u,
   0,
+  1,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::lseqdb::DBItems_DbItem, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -232,10 +235,10 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 17, -1, -1, sizeof(::lseqdb::Value)},
   { 24, -1, -1, sizeof(::lseqdb::LSeq)},
   { 31, -1, -1, sizeof(::lseqdb::PutRequest)},
-  { 39, 47, -1, sizeof(::lseqdb::SeekGetRequest)},
-  { 49, -1, -1, sizeof(::lseqdb::DBItems_DbItem)},
-  { 58, -1, -1, sizeof(::lseqdb::DBItems)},
-  { 66, -1, -1, sizeof(::lseqdb::SyncGetRequest)},
+  { 39, 48, -1, sizeof(::lseqdb::SeekGetRequest)},
+  { 51, -1, -1, sizeof(::lseqdb::DBItems_DbItem)},
+  { 60, -1, -1, sizeof(::lseqdb::DBItems)},
+  { 68, -1, -1, sizeof(::lseqdb::SyncGetRequest)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -256,28 +259,29 @@ const char descriptor_table_protodef_lseqDb_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\n\nreplica_id\030\002 \001(\005H\000\210\001\001B\r\n\013_replica_id\"\022"
   "\n\003Key\022\013\n\003key\030\001 \001(\t\"\026\n\005Value\022\r\n\005value\030\001 \001"
   "(\t\"\024\n\004LSeq\022\014\n\004lseq\030\001 \001(\t\"(\n\nPutRequest\022\013"
-  "\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"<\n\016SeekGetReq"
-  "uest\022\014\n\004lseq\030\001 \001(\t\022\022\n\005limit\030\002 \001(\rH\000\210\001\001B\010"
-  "\n\006_limit\"x\n\007DBItems\022%\n\005items\030\001 \003(\0132\026.lse"
-  "qdb.DBItems.DbItem\022\022\n\nreplica_id\030\002 \001(\005\0322"
-  "\n\006DbItem\022\014\n\004lseq\030\001 \001(\t\022\013\n\003key\030\002 \001(\t\022\r\n\005v"
-  "alue\030\003 \001(\t\"$\n\016SyncGetRequest\022\022\n\nreplica_"
-  "id\030\001 \001(\0052\274\002\n\014LSeqDatabase\022/\n\010GetValue\022\022."
-  "lseqdb.ReplicaKey\032\r.lseqdb.Value\"\000\022)\n\003Pu"
-  "t\022\022.lseqdb.PutRequest\032\014.lseqdb.LSeq\"\000\022/\n"
-  "\006Delete\022\013.lseqdb.Key\032\026.google.protobuf.E"
-  "mpty\"\000\0224\n\007SeekGet\022\026.lseqdb.SeekGetReques"
-  "t\032\017.lseqdb.DBItems\"\000\0222\n\010SyncGet_\022\026.lseqd"
-  "b.SyncGetRequest\032\014.lseqdb.LSeq\"\000\0225\n\010Sync"
-  "Put_\022\017.lseqdb.DBItems\032\026.google.protobuf."
-  "Empty\"\000b\006proto3"
+  "\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"V\n\016SeekGetReq"
+  "uest\022\014\n\004lseq\030\001 \001(\t\022\020\n\003key\030\002 \001(\tH\000\210\001\001\022\022\n\005"
+  "limit\030\003 \001(\rH\001\210\001\001B\006\n\004_keyB\010\n\006_limit\"x\n\007DB"
+  "Items\022%\n\005items\030\001 \003(\0132\026.lseqdb.DBItems.Db"
+  "Item\022\022\n\nreplica_id\030\002 \001(\005\0322\n\006DbItem\022\014\n\004ls"
+  "eq\030\001 \001(\t\022\013\n\003key\030\002 \001(\t\022\r\n\005value\030\003 \001(\t\"$\n\016"
+  "SyncGetRequest\022\022\n\nreplica_id\030\001 \001(\0052\274\002\n\014L"
+  "SeqDatabase\022/\n\010GetValue\022\022.lseqdb.Replica"
+  "Key\032\r.lseqdb.Value\"\000\022)\n\003Put\022\022.lseqdb.Put"
+  "Request\032\014.lseqdb.LSeq\"\000\022/\n\006Delete\022\013.lseq"
+  "db.Key\032\026.google.protobuf.Empty\"\000\0224\n\007Seek"
+  "Get\022\026.lseqdb.SeekGetRequest\032\017.lseqdb.DBI"
+  "tems\"\000\0222\n\010SyncGet_\022\026.lseqdb.SyncGetReque"
+  "st\032\014.lseqdb.LSeq\"\000\0225\n\010SyncPut_\022\017.lseqdb."
+  "DBItems\032\026.google.protobuf.Empty\"\000b\006proto"
+  "3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_lseqDb_2eproto_deps[1] = {
   &::descriptor_table_google_2fprotobuf_2fempty_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_lseqDb_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_lseqDb_2eproto = {
-    false, false, 775, descriptor_table_protodef_lseqDb_2eproto,
+    false, false, 801, descriptor_table_protodef_lseqDb_2eproto,
     "lseqDb.proto",
     &descriptor_table_lseqDb_2eproto_once, descriptor_table_lseqDb_2eproto_deps, 1, 9,
     schemas, file_default_instances, TableStruct_lseqDb_2eproto::offsets,
@@ -1401,8 +1405,11 @@ void PutRequest::InternalSwap(PutRequest* other) {
 class SeekGetRequest::_Internal {
  public:
   using HasBits = decltype(std::declval<SeekGetRequest>()._impl_._has_bits_);
-  static void set_has_limit(HasBits* has_bits) {
+  static void set_has_key(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
+  }
+  static void set_has_limit(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
   }
 };
 
@@ -1419,6 +1426,7 @@ SeekGetRequest::SeekGetRequest(const SeekGetRequest& from)
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.lseq_){}
+    , decltype(_impl_.key_){}
     , decltype(_impl_.limit_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1428,6 +1436,14 @@ SeekGetRequest::SeekGetRequest(const SeekGetRequest& from)
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_lseq().empty()) {
     _this->_impl_.lseq_.Set(from._internal_lseq(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_key()) {
+    _this->_impl_.key_.Set(from._internal_key(), 
       _this->GetArenaForAllocation());
   }
   _this->_impl_.limit_ = from._impl_.limit_;
@@ -1442,11 +1458,16 @@ inline void SeekGetRequest::SharedCtor(
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.lseq_){}
+    , decltype(_impl_.key_){}
     , decltype(_impl_.limit_){0u}
   };
   _impl_.lseq_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.lseq_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
@@ -1462,6 +1483,7 @@ SeekGetRequest::~SeekGetRequest() {
 inline void SeekGetRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.lseq_.Destroy();
+  _impl_.key_.Destroy();
 }
 
 void SeekGetRequest::SetCachedSize(int size) const {
@@ -1475,6 +1497,10 @@ void SeekGetRequest::Clear() {
   (void) cached_has_bits;
 
   _impl_.lseq_.ClearToEmpty();
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    _impl_.key_.ClearNonDefaultToEmpty();
+  }
   _impl_.limit_ = 0u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -1497,9 +1523,19 @@ const char* SeekGetRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 limit = 2;
+      // optional string key = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_key();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "lseqdb.SeekGetRequest.key"));
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 limit = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_limit(&has_bits);
           _impl_.limit_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
@@ -1546,10 +1582,20 @@ uint8_t* SeekGetRequest::_InternalSerialize(
         1, this->_internal_lseq(), target);
   }
 
-  // optional uint32 limit = 2;
+  // optional string key = 2;
+  if (_internal_has_key()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_key().data(), static_cast<int>(this->_internal_key().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "lseqdb.SeekGetRequest.key");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_key(), target);
+  }
+
+  // optional uint32 limit = 3;
   if (_internal_has_limit()) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_limit(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_limit(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1575,12 +1621,21 @@ size_t SeekGetRequest::ByteSizeLong() const {
         this->_internal_lseq());
   }
 
-  // optional uint32 limit = 2;
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_limit());
-  }
+  if (cached_has_bits & 0x00000003u) {
+    // optional string key = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_key());
+    }
 
+    // optional uint32 limit = 3;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_limit());
+    }
+
+  }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1602,8 +1657,15 @@ void SeekGetRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   if (!from._internal_lseq().empty()) {
     _this->_internal_set_lseq(from._internal_lseq());
   }
-  if (from._internal_has_limit()) {
-    _this->_internal_set_limit(from._internal_limit());
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_key(from._internal_key());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.limit_ = from._impl_.limit_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1628,6 +1690,10 @@ void SeekGetRequest::InternalSwap(SeekGetRequest* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.lseq_, lhs_arena,
       &other->_impl_.lseq_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.key_, lhs_arena,
+      &other->_impl_.key_, rhs_arena
   );
   swap(_impl_.limit_, other->_impl_.limit_);
 }

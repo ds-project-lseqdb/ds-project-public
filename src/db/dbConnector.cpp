@@ -199,7 +199,6 @@ replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
          it->Valid() && cnt <= limit;
          it->Next())
     {
-        std::cerr << "Lseq " << lseq << " current lsqe " << it->key().ToString() << " current key " << it->value().ToString() << std::endl;
         if (!(lseqToReplicaId(it->key().ToString()) == lseqToReplicaId(lseq))) {
             break;
         }

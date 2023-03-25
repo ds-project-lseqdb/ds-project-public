@@ -43,8 +43,8 @@ public:
     Status GetValue(ServerContext* context, const ReplicaKey* request, Value* response) override;
     Status Put(ServerContext* context, const PutRequest* request, LSeq* response) override;
     Status SeekGet(ServerContext* context, const SeekGetRequest* request, DBItems* response) override;
-    Status Delete(ServerContext* context, const Key* request, google::protobuf::Empty* response) override {
-        throw std::logic_error("Not implemented. Use tombstones yourself.");
+    Status Delete(ServerContext*, const Key*, google::protobuf::Empty*) override {
+        return {grpc::StatusCode::UNAVAILABLE, "Not implemented. Use tombstones yourself."};
     }
 
 public:

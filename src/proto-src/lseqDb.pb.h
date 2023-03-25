@@ -1008,7 +1008,8 @@ class SeekGetRequest final :
 
   enum : int {
     kLseqFieldNumber = 1,
-    kLimitFieldNumber = 2,
+    kKeyFieldNumber = 2,
+    kLimitFieldNumber = 3,
   };
   // string lseq = 1;
   void clear_lseq();
@@ -1024,7 +1025,25 @@ class SeekGetRequest final :
   std::string* _internal_mutable_lseq();
   public:
 
-  // optional uint32 limit = 2;
+  // optional string key = 2;
+  bool has_key() const;
+  private:
+  bool _internal_has_key() const;
+  public:
+  void clear_key();
+  const std::string& key() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_key(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_key();
+  PROTOBUF_NODISCARD std::string* release_key();
+  void set_allocated_key(std::string* key);
+  private:
+  const std::string& _internal_key() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_key(const std::string& value);
+  std::string* _internal_mutable_key();
+  public:
+
+  // optional uint32 limit = 3;
   bool has_limit() const;
   private:
   bool _internal_has_limit() const;
@@ -1048,6 +1067,7 @@ class SeekGetRequest final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr lseq_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr key_;
     uint32_t limit_;
   };
   union { Impl_ _impl_; };
@@ -1965,9 +1985,77 @@ inline void SeekGetRequest::set_allocated_lseq(std::string* lseq) {
   // @@protoc_insertion_point(field_set_allocated:lseqdb.SeekGetRequest.lseq)
 }
 
-// optional uint32 limit = 2;
-inline bool SeekGetRequest::_internal_has_limit() const {
+// optional string key = 2;
+inline bool SeekGetRequest::_internal_has_key() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool SeekGetRequest::has_key() const {
+  return _internal_has_key();
+}
+inline void SeekGetRequest::clear_key() {
+  _impl_.key_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& SeekGetRequest::key() const {
+  // @@protoc_insertion_point(field_get:lseqdb.SeekGetRequest.key)
+  return _internal_key();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void SeekGetRequest::set_key(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:lseqdb.SeekGetRequest.key)
+}
+inline std::string* SeekGetRequest::mutable_key() {
+  std::string* _s = _internal_mutable_key();
+  // @@protoc_insertion_point(field_mutable:lseqdb.SeekGetRequest.key)
+  return _s;
+}
+inline const std::string& SeekGetRequest::_internal_key() const {
+  return _impl_.key_.Get();
+}
+inline void SeekGetRequest::_internal_set_key(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.key_.Set(value, GetArenaForAllocation());
+}
+inline std::string* SeekGetRequest::_internal_mutable_key() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.key_.Mutable(GetArenaForAllocation());
+}
+inline std::string* SeekGetRequest::release_key() {
+  // @@protoc_insertion_point(field_release:lseqdb.SeekGetRequest.key)
+  if (!_internal_has_key()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.key_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.key_.IsDefault()) {
+    _impl_.key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void SeekGetRequest::set_allocated_key(std::string* key) {
+  if (key != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.key_.SetAllocated(key, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.key_.IsDefault()) {
+    _impl_.key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:lseqdb.SeekGetRequest.key)
+}
+
+// optional uint32 limit = 3;
+inline bool SeekGetRequest::_internal_has_limit() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
 inline bool SeekGetRequest::has_limit() const {
@@ -1975,7 +2063,7 @@ inline bool SeekGetRequest::has_limit() const {
 }
 inline void SeekGetRequest::clear_limit() {
   _impl_.limit_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
 inline uint32_t SeekGetRequest::_internal_limit() const {
   return _impl_.limit_;
@@ -1985,7 +2073,7 @@ inline uint32_t SeekGetRequest::limit() const {
   return _internal_limit();
 }
 inline void SeekGetRequest::_internal_set_limit(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_._has_bits_[0] |= 0x00000002u;
   _impl_.limit_ = value;
 }
 inline void SeekGetRequest::set_limit(uint32_t value) {

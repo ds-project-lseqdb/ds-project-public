@@ -28,7 +28,8 @@ message PutRequest {
 
 message SeekGetRequest {
   string lseq = 1;
-  optional uint32 limit = 2; // if not defined, then unlimited
+  optional string key = 2; // if defined, then filter output by key
+  optional uint32 limit = 3; // if not defined, then unlimited
 }
 
 message DBItems {
@@ -47,6 +48,7 @@ service LSeqDatabase {
   rpc GetValue(ReplicaKey) returns (Value) {}
   rpc Put(PutRequest) returns (LSeq) {}
   rpc Delete(Key) returns (google.protobuf.Empty) {}
+//  Supports search only within one replica
   rpc SeekGet(SeekGetRequest) returns (DBItems) {}
 
 //  System calls for synchronization

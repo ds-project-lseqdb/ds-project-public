@@ -10,7 +10,7 @@ YAMLConfig::YAMLConfig(std::string s) {
     grpcConfig = value[ConfigConstant::GRPC_VALUE_NAME].as<GRPCConfig>();
     //maybe assert id value
     id = value[ConfigConstant::ID].as<int>();
-    maxReplicaId = value[ConfigConstant::MAX_REPLICA_ID].as<int>();
+    maxReplicaId = value[ConfigConstant::MAX_REPLICA_ID].as<int>() + 1;
     dbFilename = value[ConfigConstant::DB_FILENAME].as<std::string>();
     assert(value[ConfigConstant::REPLICA_LIST].Type() == YAML::NodeType::Sequence);
     assert(maxReplicaId >= id);

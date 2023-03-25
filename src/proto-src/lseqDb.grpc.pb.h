@@ -57,6 +57,7 @@ class LSeqDatabase final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>> PrepareAsyncDelete(::grpc::ClientContext* context, const ::lseqdb::Key& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>>(PrepareAsyncDeleteRaw(context, request, cq));
     }
+    //  Supports search only within one replica
     virtual ::grpc::Status SeekGet(::grpc::ClientContext* context, const ::lseqdb::SeekGetRequest& request, ::lseqdb::DBItems* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::lseqdb::DBItems>> AsyncSeekGet(::grpc::ClientContext* context, const ::lseqdb::SeekGetRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::lseqdb::DBItems>>(AsyncSeekGetRaw(context, request, cq));
@@ -89,6 +90,7 @@ class LSeqDatabase final {
       virtual void Put(::grpc::ClientContext* context, const ::lseqdb::PutRequest* request, ::lseqdb::LSeq* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       virtual void Delete(::grpc::ClientContext* context, const ::lseqdb::Key* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)>) = 0;
       virtual void Delete(::grpc::ClientContext* context, const ::lseqdb::Key* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      //  Supports search only within one replica
       virtual void SeekGet(::grpc::ClientContext* context, const ::lseqdb::SeekGetRequest* request, ::lseqdb::DBItems* response, std::function<void(::grpc::Status)>) = 0;
       virtual void SeekGet(::grpc::ClientContext* context, const ::lseqdb::SeekGetRequest* request, ::lseqdb::DBItems* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       //  System calls for synchronization
@@ -214,6 +216,7 @@ class LSeqDatabase final {
     virtual ::grpc::Status GetValue(::grpc::ServerContext* context, const ::lseqdb::ReplicaKey* request, ::lseqdb::Value* response);
     virtual ::grpc::Status Put(::grpc::ServerContext* context, const ::lseqdb::PutRequest* request, ::lseqdb::LSeq* response);
     virtual ::grpc::Status Delete(::grpc::ServerContext* context, const ::lseqdb::Key* request, ::google::protobuf::Empty* response);
+    //  Supports search only within one replica
     virtual ::grpc::Status SeekGet(::grpc::ServerContext* context, const ::lseqdb::SeekGetRequest* request, ::lseqdb::DBItems* response);
     //  System calls for synchronization
     virtual ::grpc::Status SyncGet_(::grpc::ServerContext* context, const ::lseqdb::SyncGetRequest* request, ::lseqdb::LSeq* response);
