@@ -54,15 +54,21 @@ endif()
 
 #Using GTest is equivalent to performing testing
 if (UseGTest)
-    include(FetchContent)
-    FetchContent_Declare(
-            googletest
-            GIT_REPOSITORY https://github.com/google/googletest
-            GIT_TAG        v1.13.0
-    )
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
+#    configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+#    execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+#            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download"
+#            )
+#    execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+#            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download"
+#            )
+
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(googletest)
+
+#    # Add googletest directly to our build. This adds the following targets:
+#    # gtest, gtest_main, gmock and gmock_main
+#    add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src"
+#            "${CMAKE_BINARY_DIR}/googletest-build"
+#            )
 
     enable_testing()
 
