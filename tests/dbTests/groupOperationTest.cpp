@@ -29,6 +29,22 @@ TEST(groupOperationTest, baseGroupInsert) {
     EXPECT_TRUE(std::get<1>(db.get("ab", 2)).IsNotFound());
 }
 
+TEST(groupOperationTest, lseqSeekkNormalPut) {
+    YAMLConfig config("resources/config.yaml");
+    dbConnector db(std::move(config));
+    std::string firstLseq = db.put("valuekey", "valuevalue").first;
+
+    replyBatchFormat repl = db.getByLseq(dbConnector::lseqToSeq(firstLseq), 2, 1);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 1);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "valuevalue");
+
+    repl = db.getByLseq(firstLseq, 1);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 1);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "valuevalue");
+}
+
 TEST(groupOperationTest, lseqSeek) {
     YAMLConfig config("resources/config.yaml");
     dbConnector db(std::move(config));
