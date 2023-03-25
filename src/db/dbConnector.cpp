@@ -200,9 +200,9 @@ replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
     {
         if (limit != -1)
             ++cnt;
-        std::string realKey = it->value().ToString();
-        realKey[0] = '0';
-        std::string  realValue;
+        int replicaId = std::stoi(lseqToReplicaId(it->key().ToString()));
+        std::string realKey = FullKey(stampedKeyToRealKey(it->value().ToString()), lseqToSeq(it->key().ToString()), replicaId).getFullKey();//it->value().ToString();
+        std::string realValue;
         auto s = db->Get(options, realKey, &realValue);
         if (!s.ok()) {
             db->ReleaseSnapshot(options.snapshot);

@@ -48,6 +48,25 @@ TEST(groupOperationTest, lseqSeekNormalPut) {
     EXPECT_TRUE(repl.first.ok());
     EXPECT_GE(repl.second.size(), 1);
     EXPECT_EQ(std::get<2>(repl.second[0]), "valuevalue");
+
+    std::string secondLseq = db.put("valuekey2", "valuevalue2").first;
+
+    repl = db.getByLseq(dbConnector::lseqToSeq(firstLseq), 2, 2);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 2);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "valuevalue");
+    EXPECT_EQ(std::get<2>(repl.second[1]), "valuevalue2");
+
+    repl = db.getByLseq(firstLseq, 2);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 2);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "valuevalue");
+    EXPECT_EQ(std::get<2>(repl.second[1]), "valuevalue2");
+
+    repl = db.getByLseq(secondLseq, 1);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 1);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "valuevalue2");
 }
 
 TEST(groupOperationTest, lseqSeek) {
