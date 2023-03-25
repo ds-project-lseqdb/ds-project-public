@@ -22,7 +22,7 @@ public:
 
     dbConnector(const dbConnector&) = delete;
 
-    dbConnector(dbConnector&&) = default;
+    dbConnector(dbConnector&&) = delete;
 
     ~dbConnector();
 
@@ -34,7 +34,7 @@ public:
 
     pureReplyValue get(std::string key, int id);
 
-    leveldb::Status putBatch(batchValues keyValuePairs);
+    leveldb::Status putBatch(const batchValues& keyValuePairs);
 
     replyBatchFormat getByLseq(leveldb::SequenceNumber seq, int id, int limit = -1);
 
@@ -46,6 +46,7 @@ public:
 
     leveldb::SequenceNumber sequenceNumberForReplica(int id);
 
+public:
     static std::string generateGetseqKey(std::string realKey);
 
     static std::string generateLseqKey(leveldb::SequenceNumber seq, int id);
@@ -60,7 +61,7 @@ public:
 
     static leveldb::SequenceNumber lseqToSeq(const std::string& lseq);
 
-    static leveldb::SequenceNumber getFullKey(const std::string& key, leveldb::SequenceNumber seq, int id);
+//    static leveldb::SequenceNumber getFullKey(const std::string& key, leveldb::SequenceNumber seq, int id);
 
 private:
     std::mutex mx;

@@ -1364,6 +1364,7 @@ class DBItems final :
 
   enum : int {
     kItemsFieldNumber = 1,
+    kReplicaIdFieldNumber = 2,
   };
   // repeated .lseqdb.DBItems.DbItem items = 1;
   int items_size() const;
@@ -1383,6 +1384,15 @@ class DBItems final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lseqdb::DBItems_DbItem >&
       items() const;
 
+  // int32 replica_id = 2;
+  void clear_replica_id();
+  int32_t replica_id() const;
+  void set_replica_id(int32_t value);
+  private:
+  int32_t _internal_replica_id() const;
+  void _internal_set_replica_id(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:lseqdb.DBItems)
  private:
   class _Internal;
@@ -1392,6 +1402,7 @@ class DBItems final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lseqdb::DBItems_DbItem > items_;
+    int32_t replica_id_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2178,6 +2189,26 @@ inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lseqdb::DBItems_DbItem
 DBItems::items() const {
   // @@protoc_insertion_point(field_list:lseqdb.DBItems.items)
   return _impl_.items_;
+}
+
+// int32 replica_id = 2;
+inline void DBItems::clear_replica_id() {
+  _impl_.replica_id_ = 0;
+}
+inline int32_t DBItems::_internal_replica_id() const {
+  return _impl_.replica_id_;
+}
+inline int32_t DBItems::replica_id() const {
+  // @@protoc_insertion_point(field_get:lseqdb.DBItems.replica_id)
+  return _internal_replica_id();
+}
+inline void DBItems::_internal_set_replica_id(int32_t value) {
+  
+  _impl_.replica_id_ = value;
+}
+inline void DBItems::set_replica_id(int32_t value) {
+  _internal_set_replica_id(value);
+  // @@protoc_insertion_point(field_set:lseqdb.DBItems.replica_id)
 }
 
 // -------------------------------------------------------------------

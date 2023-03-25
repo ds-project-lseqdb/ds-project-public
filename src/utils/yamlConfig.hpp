@@ -13,9 +13,9 @@ public:
 
     [[nodiscard]] std::string getDbFile() const;
 
-    [[nodiscard]] std::vector<std::string> getReplicas() const;
+    [[nodiscard]] const std::vector<std::string>& getReplicas() const;
 
-    [[nodiscard]] GRPCConfig getGRPCConfig() const;
+    [[nodiscard]] const GRPCConfig& getGRPCConfig() const;
 
     [[nodiscard]] int getMaxReplicaId() const;
 

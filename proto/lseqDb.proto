@@ -39,6 +39,7 @@ message DBItems {
   }
 
   repeated DbItem items = 1;
+  int32 replica_id = 2;
 }
 
 service LSeqDatabase {

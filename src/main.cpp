@@ -15,13 +15,17 @@ int main(int argc, char** argv) {
         return 1;
     }
     YAMLConfig config(argv[1]);
+    dbConnector database(config);
 
-    std::thread server([config](){ RunServer(config); });
+    std::thread server([config, &database](){ RunServer(config, &database); });
 
     while (true) {
-        std::this_thread::sleep_for(5000ms);
-        std::cout << "tick sync" << std::endl;
+        std::this_thread::sleep_for(15000ms);
+//        std::cout << "tick sync" << std::endl;
+        SyncLoop(config, &database);
     }
+
+    server.join();
 
     return 0;
 }

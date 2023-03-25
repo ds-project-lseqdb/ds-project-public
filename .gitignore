@@ -31,10 +31,6 @@
 *.out
 *.app
 
-#CLion
-.idea/
-.idea
-
 resources
 
 #Cmake folder
@@ -42,4 +38,5 @@ build/
 cmake-build-debug/
 .cmake
 _deps
+.idea
 

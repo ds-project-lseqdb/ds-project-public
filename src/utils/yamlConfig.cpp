@@ -32,7 +32,7 @@ std::string YAMLConfig::getDbFile() const {
     return dbFilename;
 }
 
-std::vector<std::string> YAMLConfig::getReplicas() const {
+const std::vector<std::string>& YAMLConfig::getReplicas() const {
     return replicas;
 }
 
@@ -40,6 +40,6 @@ void YAMLConfig::addReplica(std::string newReplica) {
     replicas.push_back(std::move(newReplica));
 }
 
-GRPCConfig YAMLConfig::getGRPCConfig() const {
+const GRPCConfig& YAMLConfig::getGRPCConfig() const {
     return grpcConfig;
 }

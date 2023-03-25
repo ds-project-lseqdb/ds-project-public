@@ -2,10 +2,7 @@
 
 #include <chrono>
 #include <string>
-#include <sstream>
-#include <iostream>
 #include <iomanip>
-#include <mutex>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -140,8 +137,7 @@ pureReplyValue dbConnector::get(std::string key, int id) {
 //UNSAFE, this method can override existing value
 //Should never be called with unchecked value
 //Argument should contain precise keys from another replica
-leveldb::Status
-dbConnector::putBatch(batchValues keyValuePairs) {
+leveldb::Status dbConnector::putBatch(const batchValues& keyValuePairs) {
     leveldb::WriteBatch batch;
     for (const auto& [lseq, key, value] : keyValuePairs) {
         batch.Put(lseq, key);
