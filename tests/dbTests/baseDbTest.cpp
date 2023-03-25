@@ -5,10 +5,33 @@
 #include <vector>
 #include <tuple>
 
+#if defined(__GNUC__ ) && __GNUC__  < 8
+#include <experimental/filesystem>
+using namespace std::experimental::filesystem;
+#else
+#include <filesystem>
+using namespace std::filesystem;
+#endif
+
 #include "src/utils/yamlConfig.hpp"
 #include "src/utils/grpcConfig.hpp"
 #include "src/db/dbConnector.hpp"
 #include "leveldb/db.h"
+
+class baseDbTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        YAMLConfig config("resources/config.yaml");
+        std::string fileName = config.getDbFile();
+        remove_all(fileName);
+    }
+
+    void TearDown() override {
+        YAMLConfig config("resources/config.yaml");
+        std::string fileName = config.getDbFile();
+        remove_all(fileName);
+    }
+};
 
 TEST(baseDbTest, baseCorrectness) {
     YAMLConfig config("resources/config.yaml");
