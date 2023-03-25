@@ -4,14 +4,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
-
-#if defined(__GNUC__ ) && __GNUC__  < 8
-#include <experimental/filesystem>
-using namespace std::experimental::filesystem;
-#else
 #include <filesystem>
-using namespace std::filesystem;
-#endif
 
 #include "src/utils/yamlConfig.hpp"
 #include "src/utils/grpcConfig.hpp"
@@ -21,21 +14,20 @@ using namespace std::filesystem;
 class baseDbTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        YAMLConfig config("resources/config.yaml");
         std::string fileName = config.getDbFile();
-        remove_all(fileName);
+        std::filesystem::remove_all(fileName);
     }
 
     void TearDown() override {
-        YAMLConfig config("resources/config.yaml");
         std::string fileName = config.getDbFile();
-        remove_all(fileName);
+        std::filesystem::remove_all(fileName);
     }
+
+    YAMLConfig config = YAMLConfig("resources/config.yaml");
+    dbConnector db = dbConnector(config);
 };
 
-TEST(baseDbTest, baseCorrectness) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(baseDbTest, baseCorrectness) {
     EXPECT_TRUE(db.put("testval", "testdata").second.ok());
 
     //get should return same seq for same values
@@ -45,9 +37,7 @@ TEST(baseDbTest, baseCorrectness) {
     EXPECT_TRUE(std::get<1>(db.get("asghsqag")).IsNotFound());
 }
 
-TEST(baseDbTest, putSeqResult) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(baseDbTest, putSeqResult) {
     std::string firstLseq = db.put("aasgas", "bsagas").first;
     EXPECT_EQ(dbConnector::lseqToSeq(firstLseq), db.sequenceNumberForReplica(2));
     std::string secondLseq = db.put("gsagaa", "bsagas").first;
@@ -55,9 +45,7 @@ TEST(baseDbTest, putSeqResult) {
     EXPECT_TRUE(firstLseq < secondLseq);
 }
 
-TEST(baseDbTest, putsAndGets) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(baseDbTest, putsAndGets) {
     EXPECT_TRUE(db.put("a", "b").second.ok());
     EXPECT_TRUE(std::get<1>(db.get("a")).ok());
     EXPECT_EQ(std::get<2>(db.get("a")), "b");
@@ -67,9 +55,7 @@ TEST(baseDbTest, putsAndGets) {
     EXPECT_EQ(std::get<2>(db.get("c")), "d");
 }
 
-TEST(baseDbTest, putSameValues) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(baseDbTest, putSameValues) {
     EXPECT_TRUE(db.put("a2", "b2").second.ok());
     EXPECT_EQ(std::get<2>(db.get("a2")), "b2");
     EXPECT_TRUE(db.put("a2", "d2").second.ok());
@@ -77,9 +63,7 @@ TEST(baseDbTest, putSameValues) {
     EXPECT_EQ(std::get<2>(db.get("a2")), "d2");
 }
 
-TEST(baseDbTest, putAndDelete) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(baseDbTest, putAndDelete) {
     EXPECT_TRUE(db.put("a3", "b3").second.ok());
     EXPECT_EQ(std::get<2>(db.get("a3")), "b3");
     EXPECT_TRUE(db.remove("a3").second.ok());
@@ -90,9 +74,7 @@ TEST(baseDbTest, putAndDelete) {
     EXPECT_EQ(std::get<2>(db.get("a3")), "c3");
 }
 
-TEST(baseDbTest, getLSEQKey) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(baseDbTest, getLSEQKey) {
     std::string lseq = db.put("a4", "b4").first;
     EXPECT_EQ(std::get<0>(db.get("a4")), lseq);
 

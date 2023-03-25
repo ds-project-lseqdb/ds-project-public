@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <filesystem>
 #include <tuple>
 
 #include "src/utils/yamlConfig.hpp"
@@ -10,10 +11,23 @@
 #include "src/db/dbConnector.hpp"
 #include "leveldb/db.h"
 
-TEST(groupOperationTest, baseGroupInsert) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
-    //'000000000'
+class groupOperationTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        std::string fileName = config.getDbFile();
+        std::filesystem::remove_all(fileName);
+    }
+
+    void TearDown() override {
+        std::string fileName = config.getDbFile();
+        std::filesystem::remove_all(fileName);
+    }
+
+    YAMLConfig config = YAMLConfig("resources/config.yaml");
+    dbConnector db = dbConnector(config);
+};
+
+TEST_F(groupOperationTest, baseGroupInsert) {
     EXPECT_TRUE(db.putBatch({
         {dbConnector::generateLseqKey(12, 1), dbConnector::generateNormalKey("ab", 1), "val"},
         {dbConnector::generateLseqKey(15, 1), dbConnector::generateNormalKey("ab2", 1), "val2"},
@@ -29,9 +43,7 @@ TEST(groupOperationTest, baseGroupInsert) {
     EXPECT_TRUE(std::get<1>(db.get("ab", 2)).IsNotFound());
 }
 
-TEST(groupOperationTest, lseqSeekNormalPut) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(groupOperationTest, lseqSeekNormalPut) {
     std::string firstLseq = db.put("valuekey", "valuevalue").first;
 
     replyBatchFormat repl = db.getByLseq(dbConnector::lseqToSeq(firstLseq), 2, 1);
@@ -73,9 +85,7 @@ TEST(groupOperationTest, lseqSeekNormalPut) {
     EXPECT_GE(repl.second.size(), 2);
 }
 
-TEST(groupOperationTest, lseqSeek) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(groupOperationTest, lseqSeek) {
     EXPECT_TRUE(db.putBatch({
         {dbConnector::generateLseqKey(100, 2), dbConnector::generateNormalKey("abc", 2), "val"},
         {dbConnector::generateLseqKey(200, 2), dbConnector::generateNormalKey("abc2", 2), "val2"},
@@ -105,9 +115,7 @@ TEST(groupOperationTest, lseqSeek) {
     EXPECT_EQ(repl.second.size(), 0);
 }
 
-TEST(groupOperationTest, groupKeyGet) {
-    YAMLConfig config("resources/config.yaml");
-    dbConnector db(std::move(config));
+TEST_F(groupOperationTest, groupKeyGet) {
     EXPECT_TRUE(db.putBatch({
         {dbConnector::generateLseqKey(1000, 2), dbConnector::generateNormalKey("abcde", 2), "val"},
         {dbConnector::generateLseqKey(2000, 2), dbConnector::generateNormalKey("abcde", 2), "val2"},
