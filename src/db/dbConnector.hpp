@@ -61,6 +61,8 @@ public:
 
     static leveldb::SequenceNumber lseqToSeq(const std::string& lseq);
 
+    static std::string seqToString(leveldb::SequenceNumber seq);
+
 //    static leveldb::SequenceNumber getFullKey(const std::string& key, leveldb::SequenceNumber seq, int id);
 
 private:

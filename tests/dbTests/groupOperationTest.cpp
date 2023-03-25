@@ -67,6 +67,10 @@ TEST(groupOperationTest, lseqSeekNormalPut) {
     EXPECT_TRUE(repl.first.ok());
     EXPECT_EQ(repl.second.size(), 1);
     EXPECT_EQ(std::get<2>(repl.second[0]), "valuevalue2");
+
+    repl = db.getByLseq(0, 2, 1);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_GE(repl.second.size(), 2);
 }
 
 TEST(groupOperationTest, lseqSeek) {

@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <string>
+#include <iostream>
 #include <iomanip>
 #include <thread>
 #include <utility>
@@ -195,9 +196,13 @@ replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
     options.snapshot = db->GetSnapshot();
     std::unique_ptr<leveldb::Iterator> it(db->NewIterator(options));
     for (it->Seek(lseq);
-         it->Valid() && cnt <= limit && lseqToReplicaId(it->key().ToString()) == lseqToReplicaId(lseq);
+         it->Valid() && cnt <= limit;
          it->Next())
     {
+        std::cerr << "Lseq " << lseq << " current lsqe " << it->key().ToString() << " current key " << it->value().ToString() << std::endl;
+        if (!(lseqToReplicaId(it->key().ToString()) == lseqToReplicaId(lseq))) {
+            break;
+        }
         if (limit != -1)
             ++cnt;
         int replicaId = std::stoi(lseqToReplicaId(it->key().ToString()));
@@ -218,7 +223,7 @@ replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
 std::string dbConnector::generateLseqKey(leveldb::SequenceNumber seq, int id) {
     std::string lseqNumber = idToString(id);
     lseqNumber[0] = '#';
-    return  lseqNumber + std::to_string(seq);
+    return  lseqNumber + seqToString(seq);
 }
 
 std::string dbConnector::stampedKeyToRealKey(const std::string& stampedKey) {
@@ -233,6 +238,13 @@ std::string dbConnector::idToString(int id) {
     std::stringstream ss;
     //id - up to 256^3
     ss << std::setw(10) << std::setfill('0') << id;
+    return ss.str();
+}
+
+std::string dbConnector::seqToString(leveldb::SequenceNumber seq) {
+    std::stringstream ss;
+    //id - up to 256^3
+    ss << std::setw(15) << std::setfill('0') << seq;
     return ss.str();
 }
 
