@@ -28,13 +28,13 @@ using grpc::ClientContext;
 using grpc::ClientReaderWriter;
 
 using lseqdb::DBItems;
-using lseqdb::Key;
 using lseqdb::LSeq;
 using lseqdb::PutRequest;
 using lseqdb::ReplicaKey;
 using lseqdb::SeekGetRequest;
 using lseqdb::SyncGetRequest;
 using lseqdb::Value;
+using lseqdb::EventsRequest;
 
 class LSeqDatabaseImpl final : public LSeqDatabase::Service {
 public:
@@ -43,9 +43,7 @@ public:
     Status GetValue(ServerContext* context, const ReplicaKey* request, Value* response) override;
     Status Put(ServerContext* context, const PutRequest* request, LSeq* response) override;
     Status SeekGet(ServerContext* context, const SeekGetRequest* request, DBItems* response) override;
-    Status Delete(ServerContext*, const Key*, google::protobuf::Empty*) override {
-        return {grpc::StatusCode::UNAVAILABLE, "Not implemented. Use tombstones yourself."};
-    }
+    Status GetReplicaEvents(ServerContext* context, const EventsRequest* request, DBItems* response) override;
 
 public:
     Status SyncGet_(ServerContext* context, const SyncGetRequest* request, LSeq* response) override;

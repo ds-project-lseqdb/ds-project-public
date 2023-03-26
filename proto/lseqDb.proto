@@ -9,16 +9,20 @@ message ReplicaKey {
   optional int32 replica_id = 2; // if not defined, then use selfId
 }
 
-message Key {
-  string key = 1;
-}
-
 message Value {
   string value = 1;
+  string lseq = 2;
 }
 
 message LSeq {
   string lseq = 1;
+}
+
+message EventsRequest {
+  int32 replica_id = 1;
+  optional string lseq = 2; // if defined, it returns events after lseq
+  optional string key = 3; // if defined, then filter output by key
+  optional uint32 limit = 4; // if not defined, then unlimited
 }
 
 message PutRequest {
@@ -47,9 +51,9 @@ service LSeqDatabase {
 //  Database API
   rpc GetValue(ReplicaKey) returns (Value) {}
   rpc Put(PutRequest) returns (LSeq) {}
-  rpc Delete(Key) returns (google.protobuf.Empty) {}
 //  Supports search only within one replica
   rpc SeekGet(SeekGetRequest) returns (DBItems) {}
+  rpc GetReplicaEvents(EventsRequest) returns (DBItems) {}
 
 //  System calls for synchronization
   rpc SyncGet_(SyncGetRequest) returns (LSeq) {}

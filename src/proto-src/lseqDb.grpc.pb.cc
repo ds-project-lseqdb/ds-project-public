@@ -24,8 +24,8 @@ namespace lseqdb {
 static const char* LSeqDatabase_method_names[] = {
   "/lseqdb.LSeqDatabase/GetValue",
   "/lseqdb.LSeqDatabase/Put",
-  "/lseqdb.LSeqDatabase/Delete",
   "/lseqdb.LSeqDatabase/SeekGet",
+  "/lseqdb.LSeqDatabase/GetReplicaEvents",
   "/lseqdb.LSeqDatabase/SyncGet_",
   "/lseqdb.LSeqDatabase/SyncPut_",
 };
@@ -39,8 +39,8 @@ std::unique_ptr< LSeqDatabase::Stub> LSeqDatabase::NewStub(const std::shared_ptr
 LSeqDatabase::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
   : channel_(channel), rpcmethod_GetValue_(LSeqDatabase_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_Put_(LSeqDatabase_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_Delete_(LSeqDatabase_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SeekGet_(LSeqDatabase_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SeekGet_(LSeqDatabase_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetReplicaEvents_(LSeqDatabase_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_SyncGet__(LSeqDatabase_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_SyncPut__(LSeqDatabase_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
@@ -91,29 +91,6 @@ void LSeqDatabase::Stub::async::Put(::grpc::ClientContext* context, const ::lseq
   return result;
 }
 
-::grpc::Status LSeqDatabase::Stub::Delete(::grpc::ClientContext* context, const ::lseqdb::Key& request, ::google::protobuf::Empty* response) {
-  return ::grpc::internal::BlockingUnaryCall< ::lseqdb::Key, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Delete_, context, request, response);
-}
-
-void LSeqDatabase::Stub::async::Delete(::grpc::ClientContext* context, const ::lseqdb::Key* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall< ::lseqdb::Key, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Delete_, context, request, response, std::move(f));
-}
-
-void LSeqDatabase::Stub::async::Delete(::grpc::ClientContext* context, const ::lseqdb::Key* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) {
-  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Delete_, context, request, response, reactor);
-}
-
-::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* LSeqDatabase::Stub::PrepareAsyncDeleteRaw(::grpc::ClientContext* context, const ::lseqdb::Key& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::google::protobuf::Empty, ::lseqdb::Key, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Delete_, context, request);
-}
-
-::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* LSeqDatabase::Stub::AsyncDeleteRaw(::grpc::ClientContext* context, const ::lseqdb::Key& request, ::grpc::CompletionQueue* cq) {
-  auto* result =
-    this->PrepareAsyncDeleteRaw(context, request, cq);
-  result->StartCall();
-  return result;
-}
-
 ::grpc::Status LSeqDatabase::Stub::SeekGet(::grpc::ClientContext* context, const ::lseqdb::SeekGetRequest& request, ::lseqdb::DBItems* response) {
   return ::grpc::internal::BlockingUnaryCall< ::lseqdb::SeekGetRequest, ::lseqdb::DBItems, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_SeekGet_, context, request, response);
 }
@@ -133,6 +110,29 @@ void LSeqDatabase::Stub::async::SeekGet(::grpc::ClientContext* context, const ::
 ::grpc::ClientAsyncResponseReader< ::lseqdb::DBItems>* LSeqDatabase::Stub::AsyncSeekGetRaw(::grpc::ClientContext* context, const ::lseqdb::SeekGetRequest& request, ::grpc::CompletionQueue* cq) {
   auto* result =
     this->PrepareAsyncSeekGetRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status LSeqDatabase::Stub::GetReplicaEvents(::grpc::ClientContext* context, const ::lseqdb::EventsRequest& request, ::lseqdb::DBItems* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::lseqdb::EventsRequest, ::lseqdb::DBItems, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_GetReplicaEvents_, context, request, response);
+}
+
+void LSeqDatabase::Stub::async::GetReplicaEvents(::grpc::ClientContext* context, const ::lseqdb::EventsRequest* request, ::lseqdb::DBItems* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::lseqdb::EventsRequest, ::lseqdb::DBItems, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetReplicaEvents_, context, request, response, std::move(f));
+}
+
+void LSeqDatabase::Stub::async::GetReplicaEvents(::grpc::ClientContext* context, const ::lseqdb::EventsRequest* request, ::lseqdb::DBItems* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetReplicaEvents_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::lseqdb::DBItems>* LSeqDatabase::Stub::PrepareAsyncGetReplicaEventsRaw(::grpc::ClientContext* context, const ::lseqdb::EventsRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::lseqdb::DBItems, ::lseqdb::EventsRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_GetReplicaEvents_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::lseqdb::DBItems>* LSeqDatabase::Stub::AsyncGetReplicaEventsRaw(::grpc::ClientContext* context, const ::lseqdb::EventsRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncGetReplicaEventsRaw(context, request, cq);
   result->StartCall();
   return result;
 }
@@ -207,22 +207,22 @@ LSeqDatabase::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       LSeqDatabase_method_names[2],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< LSeqDatabase::Service, ::lseqdb::Key, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
-          [](LSeqDatabase::Service* service,
-             ::grpc::ServerContext* ctx,
-             const ::lseqdb::Key* req,
-             ::google::protobuf::Empty* resp) {
-               return service->Delete(ctx, req, resp);
-             }, this)));
-  AddMethod(new ::grpc::internal::RpcServiceMethod(
-      LSeqDatabase_method_names[3],
-      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< LSeqDatabase::Service, ::lseqdb::SeekGetRequest, ::lseqdb::DBItems, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](LSeqDatabase::Service* service,
              ::grpc::ServerContext* ctx,
              const ::lseqdb::SeekGetRequest* req,
              ::lseqdb::DBItems* resp) {
                return service->SeekGet(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      LSeqDatabase_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< LSeqDatabase::Service, ::lseqdb::EventsRequest, ::lseqdb::DBItems, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](LSeqDatabase::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::lseqdb::EventsRequest* req,
+             ::lseqdb::DBItems* resp) {
+               return service->GetReplicaEvents(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       LSeqDatabase_method_names[4],
@@ -263,14 +263,14 @@ LSeqDatabase::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status LSeqDatabase::Service::Delete(::grpc::ServerContext* context, const ::lseqdb::Key* request, ::google::protobuf::Empty* response) {
+::grpc::Status LSeqDatabase::Service::SeekGet(::grpc::ServerContext* context, const ::lseqdb::SeekGetRequest* request, ::lseqdb::DBItems* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status LSeqDatabase::Service::SeekGet(::grpc::ServerContext* context, const ::lseqdb::SeekGetRequest* request, ::lseqdb::DBItems* response) {
+::grpc::Status LSeqDatabase::Service::GetReplicaEvents(::grpc::ServerContext* context, const ::lseqdb::EventsRequest* request, ::lseqdb::DBItems* response) {
   (void) context;
   (void) request;
   (void) response;

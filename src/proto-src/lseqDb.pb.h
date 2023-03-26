@@ -52,9 +52,9 @@ extern DBItemsDefaultTypeInternal _DBItems_default_instance_;
 class DBItems_DbItem;
 struct DBItems_DbItemDefaultTypeInternal;
 extern DBItems_DbItemDefaultTypeInternal _DBItems_DbItem_default_instance_;
-class Key;
-struct KeyDefaultTypeInternal;
-extern KeyDefaultTypeInternal _Key_default_instance_;
+class EventsRequest;
+struct EventsRequestDefaultTypeInternal;
+extern EventsRequestDefaultTypeInternal _EventsRequest_default_instance_;
 class LSeq;
 struct LSeqDefaultTypeInternal;
 extern LSeqDefaultTypeInternal _LSeq_default_instance_;
@@ -77,7 +77,7 @@ extern ValueDefaultTypeInternal _Value_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::lseqdb::DBItems* Arena::CreateMaybeMessage<::lseqdb::DBItems>(Arena*);
 template<> ::lseqdb::DBItems_DbItem* Arena::CreateMaybeMessage<::lseqdb::DBItems_DbItem>(Arena*);
-template<> ::lseqdb::Key* Arena::CreateMaybeMessage<::lseqdb::Key>(Arena*);
+template<> ::lseqdb::EventsRequest* Arena::CreateMaybeMessage<::lseqdb::EventsRequest>(Arena*);
 template<> ::lseqdb::LSeq* Arena::CreateMaybeMessage<::lseqdb::LSeq>(Arena*);
 template<> ::lseqdb::PutRequest* Arena::CreateMaybeMessage<::lseqdb::PutRequest>(Arena*);
 template<> ::lseqdb::ReplicaKey* Arena::CreateMaybeMessage<::lseqdb::ReplicaKey>(Arena*);
@@ -258,159 +258,6 @@ class ReplicaKey final :
 };
 // -------------------------------------------------------------------
 
-class Key final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:lseqdb.Key) */ {
- public:
-  inline Key() : Key(nullptr) {}
-  ~Key() override;
-  explicit PROTOBUF_CONSTEXPR Key(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  Key(const Key& from);
-  Key(Key&& from) noexcept
-    : Key() {
-    *this = ::std::move(from);
-  }
-
-  inline Key& operator=(const Key& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Key& operator=(Key&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const Key& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const Key* internal_default_instance() {
-    return reinterpret_cast<const Key*>(
-               &_Key_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  friend void swap(Key& a, Key& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Key* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Key* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  Key* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Key>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Key& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Key& from) {
-    Key::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Key* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "lseqdb.Key";
-  }
-  protected:
-  explicit Key(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kKeyFieldNumber = 1,
-  };
-  // string key = 1;
-  void clear_key();
-  const std::string& key() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_key(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_key();
-  PROTOBUF_NODISCARD std::string* release_key();
-  void set_allocated_key(std::string* key);
-  private:
-  const std::string& _internal_key() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_key(const std::string& value);
-  std::string* _internal_mutable_key();
-  public:
-
-  // @@protoc_insertion_point(class_scope:lseqdb.Key)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr key_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_lseqDb_2eproto;
-};
-// -------------------------------------------------------------------
-
 class Value final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:lseqdb.Value) */ {
  public:
@@ -459,7 +306,7 @@ class Value final :
                &_Value_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    1;
 
   friend void swap(Value& a, Value& b) {
     a.Swap(&b);
@@ -533,6 +380,7 @@ class Value final :
 
   enum : int {
     kValueFieldNumber = 1,
+    kLseqFieldNumber = 2,
   };
   // string value = 1;
   void clear_value();
@@ -548,6 +396,20 @@ class Value final :
   std::string* _internal_mutable_value();
   public:
 
+  // string lseq = 2;
+  void clear_lseq();
+  const std::string& lseq() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_lseq(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_lseq();
+  PROTOBUF_NODISCARD std::string* release_lseq();
+  void set_allocated_lseq(std::string* lseq);
+  private:
+  const std::string& _internal_lseq() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_lseq(const std::string& value);
+  std::string* _internal_mutable_lseq();
+  public:
+
   // @@protoc_insertion_point(class_scope:lseqdb.Value)
  private:
   class _Internal;
@@ -557,6 +419,7 @@ class Value final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr value_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr lseq_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -612,7 +475,7 @@ class LSeq final :
                &_LSeq_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    2;
 
   friend void swap(LSeq& a, LSeq& b) {
     a.Swap(&b);
@@ -711,6 +574,210 @@ class LSeq final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr lseq_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_lseqDb_2eproto;
+};
+// -------------------------------------------------------------------
+
+class EventsRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:lseqdb.EventsRequest) */ {
+ public:
+  inline EventsRequest() : EventsRequest(nullptr) {}
+  ~EventsRequest() override;
+  explicit PROTOBUF_CONSTEXPR EventsRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  EventsRequest(const EventsRequest& from);
+  EventsRequest(EventsRequest&& from) noexcept
+    : EventsRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline EventsRequest& operator=(const EventsRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline EventsRequest& operator=(EventsRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const EventsRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const EventsRequest* internal_default_instance() {
+    return reinterpret_cast<const EventsRequest*>(
+               &_EventsRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(EventsRequest& a, EventsRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(EventsRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(EventsRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  EventsRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<EventsRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const EventsRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const EventsRequest& from) {
+    EventsRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(EventsRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "lseqdb.EventsRequest";
+  }
+  protected:
+  explicit EventsRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLseqFieldNumber = 2,
+    kKeyFieldNumber = 3,
+    kReplicaIdFieldNumber = 1,
+    kLimitFieldNumber = 4,
+  };
+  // optional string lseq = 2;
+  bool has_lseq() const;
+  private:
+  bool _internal_has_lseq() const;
+  public:
+  void clear_lseq();
+  const std::string& lseq() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_lseq(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_lseq();
+  PROTOBUF_NODISCARD std::string* release_lseq();
+  void set_allocated_lseq(std::string* lseq);
+  private:
+  const std::string& _internal_lseq() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_lseq(const std::string& value);
+  std::string* _internal_mutable_lseq();
+  public:
+
+  // optional string key = 3;
+  bool has_key() const;
+  private:
+  bool _internal_has_key() const;
+  public:
+  void clear_key();
+  const std::string& key() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_key(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_key();
+  PROTOBUF_NODISCARD std::string* release_key();
+  void set_allocated_key(std::string* key);
+  private:
+  const std::string& _internal_key() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_key(const std::string& value);
+  std::string* _internal_mutable_key();
+  public:
+
+  // int32 replica_id = 1;
+  void clear_replica_id();
+  int32_t replica_id() const;
+  void set_replica_id(int32_t value);
+  private:
+  int32_t _internal_replica_id() const;
+  void _internal_set_replica_id(int32_t value);
+  public:
+
+  // optional uint32 limit = 4;
+  bool has_limit() const;
+  private:
+  bool _internal_has_limit() const;
+  public:
+  void clear_limit();
+  uint32_t limit() const;
+  void set_limit(uint32_t value);
+  private:
+  uint32_t _internal_limit() const;
+  void _internal_set_limit(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:lseqdb.EventsRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr lseq_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr key_;
+    int32_t replica_id_;
+    uint32_t limit_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_lseqDb_2eproto;
@@ -1667,60 +1734,6 @@ inline void ReplicaKey::set_replica_id(int32_t value) {
 
 // -------------------------------------------------------------------
 
-// Key
-
-// string key = 1;
-inline void Key::clear_key() {
-  _impl_.key_.ClearToEmpty();
-}
-inline const std::string& Key::key() const {
-  // @@protoc_insertion_point(field_get:lseqdb.Key.key)
-  return _internal_key();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Key::set_key(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:lseqdb.Key.key)
-}
-inline std::string* Key::mutable_key() {
-  std::string* _s = _internal_mutable_key();
-  // @@protoc_insertion_point(field_mutable:lseqdb.Key.key)
-  return _s;
-}
-inline const std::string& Key::_internal_key() const {
-  return _impl_.key_.Get();
-}
-inline void Key::_internal_set_key(const std::string& value) {
-  
-  _impl_.key_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Key::_internal_mutable_key() {
-  
-  return _impl_.key_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Key::release_key() {
-  // @@protoc_insertion_point(field_release:lseqdb.Key.key)
-  return _impl_.key_.Release();
-}
-inline void Key::set_allocated_key(std::string* key) {
-  if (key != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.key_.SetAllocated(key, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.key_.IsDefault()) {
-    _impl_.key_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:lseqdb.Key.key)
-}
-
-// -------------------------------------------------------------------
-
 // Value
 
 // string value = 1;
@@ -1771,6 +1784,56 @@ inline void Value::set_allocated_value(std::string* value) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:lseqdb.Value.value)
+}
+
+// string lseq = 2;
+inline void Value::clear_lseq() {
+  _impl_.lseq_.ClearToEmpty();
+}
+inline const std::string& Value::lseq() const {
+  // @@protoc_insertion_point(field_get:lseqdb.Value.lseq)
+  return _internal_lseq();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void Value::set_lseq(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.lseq_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:lseqdb.Value.lseq)
+}
+inline std::string* Value::mutable_lseq() {
+  std::string* _s = _internal_mutable_lseq();
+  // @@protoc_insertion_point(field_mutable:lseqdb.Value.lseq)
+  return _s;
+}
+inline const std::string& Value::_internal_lseq() const {
+  return _impl_.lseq_.Get();
+}
+inline void Value::_internal_set_lseq(const std::string& value) {
+  
+  _impl_.lseq_.Set(value, GetArenaForAllocation());
+}
+inline std::string* Value::_internal_mutable_lseq() {
+  
+  return _impl_.lseq_.Mutable(GetArenaForAllocation());
+}
+inline std::string* Value::release_lseq() {
+  // @@protoc_insertion_point(field_release:lseqdb.Value.lseq)
+  return _impl_.lseq_.Release();
+}
+inline void Value::set_allocated_lseq(std::string* lseq) {
+  if (lseq != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.lseq_.SetAllocated(lseq, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.lseq_.IsDefault()) {
+    _impl_.lseq_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:lseqdb.Value.lseq)
 }
 
 // -------------------------------------------------------------------
@@ -1825,6 +1888,194 @@ inline void LSeq::set_allocated_lseq(std::string* lseq) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:lseqdb.LSeq.lseq)
+}
+
+// -------------------------------------------------------------------
+
+// EventsRequest
+
+// int32 replica_id = 1;
+inline void EventsRequest::clear_replica_id() {
+  _impl_.replica_id_ = 0;
+}
+inline int32_t EventsRequest::_internal_replica_id() const {
+  return _impl_.replica_id_;
+}
+inline int32_t EventsRequest::replica_id() const {
+  // @@protoc_insertion_point(field_get:lseqdb.EventsRequest.replica_id)
+  return _internal_replica_id();
+}
+inline void EventsRequest::_internal_set_replica_id(int32_t value) {
+  
+  _impl_.replica_id_ = value;
+}
+inline void EventsRequest::set_replica_id(int32_t value) {
+  _internal_set_replica_id(value);
+  // @@protoc_insertion_point(field_set:lseqdb.EventsRequest.replica_id)
+}
+
+// optional string lseq = 2;
+inline bool EventsRequest::_internal_has_lseq() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool EventsRequest::has_lseq() const {
+  return _internal_has_lseq();
+}
+inline void EventsRequest::clear_lseq() {
+  _impl_.lseq_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& EventsRequest::lseq() const {
+  // @@protoc_insertion_point(field_get:lseqdb.EventsRequest.lseq)
+  return _internal_lseq();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void EventsRequest::set_lseq(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.lseq_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:lseqdb.EventsRequest.lseq)
+}
+inline std::string* EventsRequest::mutable_lseq() {
+  std::string* _s = _internal_mutable_lseq();
+  // @@protoc_insertion_point(field_mutable:lseqdb.EventsRequest.lseq)
+  return _s;
+}
+inline const std::string& EventsRequest::_internal_lseq() const {
+  return _impl_.lseq_.Get();
+}
+inline void EventsRequest::_internal_set_lseq(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.lseq_.Set(value, GetArenaForAllocation());
+}
+inline std::string* EventsRequest::_internal_mutable_lseq() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.lseq_.Mutable(GetArenaForAllocation());
+}
+inline std::string* EventsRequest::release_lseq() {
+  // @@protoc_insertion_point(field_release:lseqdb.EventsRequest.lseq)
+  if (!_internal_has_lseq()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.lseq_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.lseq_.IsDefault()) {
+    _impl_.lseq_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void EventsRequest::set_allocated_lseq(std::string* lseq) {
+  if (lseq != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.lseq_.SetAllocated(lseq, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.lseq_.IsDefault()) {
+    _impl_.lseq_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:lseqdb.EventsRequest.lseq)
+}
+
+// optional string key = 3;
+inline bool EventsRequest::_internal_has_key() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool EventsRequest::has_key() const {
+  return _internal_has_key();
+}
+inline void EventsRequest::clear_key() {
+  _impl_.key_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& EventsRequest::key() const {
+  // @@protoc_insertion_point(field_get:lseqdb.EventsRequest.key)
+  return _internal_key();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void EventsRequest::set_key(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:lseqdb.EventsRequest.key)
+}
+inline std::string* EventsRequest::mutable_key() {
+  std::string* _s = _internal_mutable_key();
+  // @@protoc_insertion_point(field_mutable:lseqdb.EventsRequest.key)
+  return _s;
+}
+inline const std::string& EventsRequest::_internal_key() const {
+  return _impl_.key_.Get();
+}
+inline void EventsRequest::_internal_set_key(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.key_.Set(value, GetArenaForAllocation());
+}
+inline std::string* EventsRequest::_internal_mutable_key() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.key_.Mutable(GetArenaForAllocation());
+}
+inline std::string* EventsRequest::release_key() {
+  // @@protoc_insertion_point(field_release:lseqdb.EventsRequest.key)
+  if (!_internal_has_key()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.key_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.key_.IsDefault()) {
+    _impl_.key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void EventsRequest::set_allocated_key(std::string* key) {
+  if (key != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.key_.SetAllocated(key, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.key_.IsDefault()) {
+    _impl_.key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:lseqdb.EventsRequest.key)
+}
+
+// optional uint32 limit = 4;
+inline bool EventsRequest::_internal_has_limit() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool EventsRequest::has_limit() const {
+  return _internal_has_limit();
+}
+inline void EventsRequest::clear_limit() {
+  _impl_.limit_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline uint32_t EventsRequest::_internal_limit() const {
+  return _impl_.limit_;
+}
+inline uint32_t EventsRequest::limit() const {
+  // @@protoc_insertion_point(field_get:lseqdb.EventsRequest.limit)
+  return _internal_limit();
+}
+inline void EventsRequest::_internal_set_limit(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.limit_ = value;
+}
+inline void EventsRequest::set_limit(uint32_t value) {
+  _internal_set_limit(value);
+  // @@protoc_insertion_point(field_set:lseqdb.EventsRequest.limit)
 }
 
 // -------------------------------------------------------------------

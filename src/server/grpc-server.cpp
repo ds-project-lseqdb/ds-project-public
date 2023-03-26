@@ -27,6 +27,7 @@ Status LSeqDatabaseImpl::GetValue(ServerContext* context, const ReplicaKey* requ
     if (!std::get<1>(res).ok()) {
         return {grpc::StatusCode::UNAVAILABLE, std::get<1>(res).ToString()};
     }
+    response->set_lseq(std::get<0>(res));
     response->set_value(std::get<2>(res));
     return Status::OK;
 }
@@ -60,6 +61,22 @@ Status LSeqDatabaseImpl::SeekGet(ServerContext* context, const SeekGetRequest* r
         proto_item->set_value(std::get<2>(item));
     }
     return Status::OK;
+}
+
+Status LSeqDatabaseImpl::GetReplicaEvents(ServerContext* context, const EventsRequest* request, DBItems* response) {
+    SeekGetRequest req;
+    if (request->has_limit()) {
+        req.set_limit(request->limit());
+    }
+    if (request->has_key()) {
+        req.set_key(request->key());
+    }
+    if (request->has_lseq()) {
+        req.set_lseq(request->lseq());
+    } else {
+        req.set_lseq(dbConnector::generateLseqKey(0, request->replica_id()));
+    }
+    return SeekGet(context, &req, response);
 }
 
 Status LSeqDatabaseImpl::SyncGet_(ServerContext* context, const SyncGetRequest* request, LSeq* response) {
