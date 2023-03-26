@@ -46,7 +46,6 @@ public:
 
     leveldb::SequenceNumber sequenceNumberForReplica(int id);
 
-public:
     static std::string generateGetseqKey(std::string realKey);
 
     static std::string generateLseqKey(leveldb::SequenceNumber seq, int id);
@@ -63,7 +62,9 @@ public:
 
     static std::string seqToString(leveldb::SequenceNumber seq);
 
-//    static leveldb::SequenceNumber getFullKey(const std::string& key, leveldb::SequenceNumber seq, int id);
+protected:
+
+    leveldb::SequenceNumber getMaxSeqForReplica(int id);
 
 private:
     std::mutex mx;
