@@ -10,10 +10,14 @@
 #include "src/utils/yamlConfig.hpp"
 #include "src/db/comparator.hpp"
 
-using replyFormat = std::pair<std::string, leveldb::Status>;
-using pureReplyValue = std::tuple<std::string, leveldb::Status, std::string>;
-//lseq, key, value
-using batchValues = std::vector<std::tuple<std::string, std::string, std::string>>;
+//TODO maybe refactor to use different structs
+using lseqType = std::string;
+using keyType = std::string;
+using valueType = std::string;
+
+using replyFormat = std::pair<lseqType, leveldb::Status>;
+using pureReplyValue = std::tuple<lseqType, leveldb::Status, valueType>;
+using batchValues = std::vector<std::tuple<lseqType, keyType, valueType>>;
 using replyBatchFormat = std::pair<leveldb::Status, batchValues>;
 
 class dbConnector {
@@ -45,6 +49,8 @@ public:
     replyBatchFormat getAllValuesForKey(const std::string& key, int id, int limit = -1);
 
     leveldb::SequenceNumber sequenceNumberForReplica(int id);
+
+
 
 public:
     static std::string generateGetseqKey(std::string realKey);
