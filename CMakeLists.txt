@@ -109,6 +109,20 @@ if (UseGTest)
     )
 
     add_executable(
+            restartDbTest
+            tests/dbTests/restartDbTest.cpp
+            src/utils/yamlConfig.cpp
+            src/db/dbConnector.cpp
+    )
+    target_link_libraries(
+            restartDbTest
+            leveldb
+            gtest_main
+            yaml-cpp
+            gtest
+    )
+
+    add_executable(
             fullKeyTest
             tests/dbTests/fullKeyTest.cpp
     )

@@ -28,11 +28,34 @@ dbConnector::dbConnector(YAMLConfig config)
     db = nullptr;
     leveldb::Status status = leveldb::DB::Open(options, filename, &db);
     assert(status.ok());
+    for (int i = 0; i < config.getMaxReplicaId(); ++i) {
+        seqCount[i] = getMaxSeqForReplica(i);
+    }
 }
 
 dbConnector::~dbConnector()
 {
     delete db;
+}
+
+leveldb::SequenceNumber dbConnector::getMaxSeqForReplica(int id) {
+    leveldb::ReadOptions options;
+    options.snapshot = db->GetSnapshot();
+    std::unique_ptr<leveldb::Iterator> it(db->NewIterator(options));
+    leveldb::SequenceNumber seq = 0;
+    for (it->Seek(generateLseqKey(0, id));
+         it->Valid();
+         it->Next())
+    {
+        std::string lseq = it->key().ToString();
+        if (lseq[0] != '#')
+            break;
+        if (lseq[0] == '#' && std::stoi(lseqToReplicaId(lseq)) != id)
+            break;
+        seq = lseqToSeq(lseq);
+    }
+    db->ReleaseSnapshot(options.snapshot);
+    return seq;
 }
 
 leveldb::SequenceNumber dbConnector::sequenceNumberForReplica(int id) {
