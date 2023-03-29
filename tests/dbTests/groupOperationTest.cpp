@@ -107,6 +107,13 @@ TEST_F(groupOperationTest, lseqSeek) {
     EXPECT_EQ(std::get<2>(repl.second[1]), "val3");
     EXPECT_EQ(std::get<2>(repl.second[2]), "val4");
 
+    repl = db.getByLseq(100, 2, -1, dbConnector::LSEQ_COMPARE::GREATER);
+    EXPECT_TRUE(repl.first.ok());
+    EXPECT_EQ(repl.second.size(), 3);
+    EXPECT_EQ(std::get<2>(repl.second[0]), "val2");
+    EXPECT_EQ(std::get<2>(repl.second[1]), "val3");
+    EXPECT_EQ(std::get<2>(repl.second[2]), "val4");
+
     repl = db.getByLseq(100, 1);
     EXPECT_TRUE(repl.first.ok());
     for (auto res : repl.second) {

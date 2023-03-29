@@ -180,17 +180,17 @@ leveldb::Status dbConnector::putBatch(const batchValues& keyValuePairs) {
     return s;
 }
 
-replyBatchFormat dbConnector::getByLseq(leveldb::SequenceNumber seq, int id, int limit) {
-    return getByLseq(generateLseqKey(seq, id), limit);
+replyBatchFormat dbConnector::getByLseq(leveldb::SequenceNumber seq, int id, int limit, LSEQ_COMPARE isGreater) {
+    return getByLseq(generateLseqKey(seq, id), limit, isGreater);
 }
 
-replyBatchFormat dbConnector::getValuesForKey(const std::string& key, leveldb::SequenceNumber seq, int id, int limit) {
+replyBatchFormat dbConnector::getValuesForKey(const std::string& key, leveldb::SequenceNumber seq, int id, int limit, LSEQ_COMPARE isGreater) {
     batchValues res;
     int cnt = -1;
     leveldb::ReadOptions options;
     options.snapshot = db->GetSnapshot();
     std::unique_ptr<leveldb::Iterator> it(db->NewIterator(options));
-    FullKey searchValue = FullKey(key, seq, id);
+    FullKey searchValue = (isGreater == LSEQ_COMPARE::GREATER ? FullKey(key, seq + 1, id) : FullKey(key, seq, id));
     for (it->Seek(searchValue.getFullKey());
          it->Valid() && cnt <= limit;
          it->Next())
@@ -208,16 +208,18 @@ replyBatchFormat dbConnector::getValuesForKey(const std::string& key, leveldb::S
     return {status, res};
 }
 
-replyBatchFormat dbConnector::getAllValuesForKey(const std::string& key, int id, int limit) {
-    return getValuesForKey(key, 0, id, limit);
+replyBatchFormat dbConnector::getAllValuesForKey(const std::string& key, int id, int limit, LSEQ_COMPARE isGreater) {
+    return getValuesForKey(key, 0, id, limit, isGreater);
 }
 
-replyBatchFormat dbConnector::getByLseq(const std::string& lseq, int limit) {
+replyBatchFormat dbConnector::getByLseq(std::string lseq, int limit, LSEQ_COMPARE isGreater) {
     batchValues res;
     int cnt = -1;
     leveldb::ReadOptions options;
     options.snapshot = db->GetSnapshot();
     std::unique_ptr<leveldb::Iterator> it(db->NewIterator(options));
+    if (isGreater == LSEQ_COMPARE::GREATER)
+        lseq = generateLseqKey(lseqToSeq(lseq) + 1, std::stoi(lseqToReplicaId(lseq)));
     for (it->Seek(lseq);
          it->Valid() && cnt <= limit;
          it->Next())

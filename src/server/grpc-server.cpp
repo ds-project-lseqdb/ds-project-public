@@ -46,9 +46,9 @@ Status LSeqDatabaseImpl::SeekGet(ServerContext* context, const SeekGetRequest* r
     int limit = request->has_limit() ? static_cast<int>(request->limit()) : -1;
     const auto& lseq = request->lseq();
     if (request->has_key()) {
-        res = db->getValuesForKey(request->key(), dbConnector::lseqToSeq(lseq), std::stoi(dbConnector::lseqToReplicaId(lseq)), limit);
+        res = db->getValuesForKey(request->key(), dbConnector::lseqToSeq(lseq), std::stoi(dbConnector::lseqToReplicaId(lseq)), limit, dbConnector::LSEQ_COMPARE::GREATER);
     } else {
-        res = db->getByLseq(lseq, limit);
+        res = db->getByLseq(lseq, limit, dbConnector::LSEQ_COMPARE::GREATER);
     }
 
     if (!res.first.ok()) {

@@ -20,8 +20,12 @@ using pureReplyValue = std::tuple<lseqType, leveldb::Status, valueType>;
 using batchValues = std::vector<std::tuple<lseqType, keyType, valueType>>;
 using replyBatchFormat = std::pair<leveldb::Status, batchValues>;
 
+
 class dbConnector {
 public:
+
+    enum class LSEQ_COMPARE {GREATER_EQUAL, GREATER};
+
     explicit dbConnector(YAMLConfig config);
 
     dbConnector(const dbConnector&) = delete;
@@ -40,13 +44,13 @@ public:
 
     leveldb::Status putBatch(const batchValues& keyValuePairs);
 
-    replyBatchFormat getByLseq(leveldb::SequenceNumber seq, int id, int limit = -1);
+    replyBatchFormat getByLseq(leveldb::SequenceNumber seq, int id, int limit = -1, LSEQ_COMPARE isGreater = LSEQ_COMPARE::GREATER_EQUAL);
 
-    replyBatchFormat getByLseq(const std::string& lseq, int limit = -1);
+    replyBatchFormat getByLseq(std::string lseq, int limit = -1, LSEQ_COMPARE isGreater = LSEQ_COMPARE::GREATER_EQUAL);
 
-    replyBatchFormat getValuesForKey(const std::string& key, leveldb::SequenceNumber seq, int id, int limit = -1);
+    replyBatchFormat getValuesForKey(const std::string& key, leveldb::SequenceNumber seq, int id, int limit = -1, LSEQ_COMPARE isGreater = LSEQ_COMPARE::GREATER_EQUAL);
 
-    replyBatchFormat getAllValuesForKey(const std::string& key, int id, int limit = -1);
+    replyBatchFormat getAllValuesForKey(const std::string& key, int id, int limit = -1, LSEQ_COMPARE isGreater = LSEQ_COMPARE::GREATER_EQUAL);
 
     leveldb::SequenceNumber sequenceNumberForReplica(int id);
 
