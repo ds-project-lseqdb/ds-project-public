@@ -20,21 +20,21 @@
 
 using lseqdb::LSeqDatabase;
 
-using grpc::ServerContext;
-using grpc::Status;
-
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::ClientReaderWriter;
+using grpc::ServerContext;
+using grpc::Status;
 
+using lseqdb::Config;
 using lseqdb::DBItems;
+using lseqdb::EventsRequest;
 using lseqdb::LSeq;
 using lseqdb::PutRequest;
 using lseqdb::ReplicaKey;
 using lseqdb::SeekGetRequest;
 using lseqdb::SyncGetRequest;
 using lseqdb::Value;
-using lseqdb::EventsRequest;
 
 class LSeqDatabaseImpl final : public LSeqDatabase::Service {
 public:
@@ -44,6 +44,9 @@ public:
     Status Put(ServerContext* context, const PutRequest* request, LSeq* response) override;
     Status SeekGet(ServerContext* context, const SeekGetRequest* request, DBItems* response) override;
     Status GetReplicaEvents(ServerContext* context, const EventsRequest* request, DBItems* response) override;
+
+public:
+    Status GetConfig(ServerContext* context, const ::google::protobuf::Empty*, Config* response) override;
 
 public:
     Status SyncGet_(ServerContext* context, const SyncGetRequest* request, LSeq* response) override;

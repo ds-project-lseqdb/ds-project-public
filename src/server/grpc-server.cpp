@@ -79,6 +79,12 @@ Status LSeqDatabaseImpl::GetReplicaEvents(ServerContext* context, const EventsRe
     return SeekGet(context, &req, response);
 }
 
+Status LSeqDatabaseImpl::GetConfig(ServerContext* context, const ::google::protobuf::Empty*, Config* response) {
+    response->set_self_replica_id(cfg.getId());
+    response->set_max_replica_id(cfg.getMaxReplicaId());
+    return Status::OK;
+}
+
 Status LSeqDatabaseImpl::SyncGet_(ServerContext* context, const SyncGetRequest* request, LSeq* response) {
     auto seq = db->sequenceNumberForReplica(request->replica_id());
     response->set_lseq(dbConnector::generateLseqKey(seq, request->replica_id()));

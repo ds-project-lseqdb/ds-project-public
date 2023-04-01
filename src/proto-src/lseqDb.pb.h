@@ -46,6 +46,9 @@ struct TableStruct_lseqDb_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_lseqDb_2eproto;
 namespace lseqdb {
+class Config;
+struct ConfigDefaultTypeInternal;
+extern ConfigDefaultTypeInternal _Config_default_instance_;
 class DBItems;
 struct DBItemsDefaultTypeInternal;
 extern DBItemsDefaultTypeInternal _DBItems_default_instance_;
@@ -75,6 +78,7 @@ struct ValueDefaultTypeInternal;
 extern ValueDefaultTypeInternal _Value_default_instance_;
 }  // namespace lseqdb
 PROTOBUF_NAMESPACE_OPEN
+template<> ::lseqdb::Config* Arena::CreateMaybeMessage<::lseqdb::Config>(Arena*);
 template<> ::lseqdb::DBItems* Arena::CreateMaybeMessage<::lseqdb::DBItems>(Arena*);
 template<> ::lseqdb::DBItems_DbItem* Arena::CreateMaybeMessage<::lseqdb::DBItems_DbItem>(Arena*);
 template<> ::lseqdb::EventsRequest* Arena::CreateMaybeMessage<::lseqdb::EventsRequest>(Arena*);
@@ -1497,6 +1501,165 @@ class DBItems final :
 };
 // -------------------------------------------------------------------
 
+class Config final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:lseqdb.Config) */ {
+ public:
+  inline Config() : Config(nullptr) {}
+  ~Config() override;
+  explicit PROTOBUF_CONSTEXPR Config(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  Config(const Config& from);
+  Config(Config&& from) noexcept
+    : Config() {
+    *this = ::std::move(from);
+  }
+
+  inline Config& operator=(const Config& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Config& operator=(Config&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Config& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Config* internal_default_instance() {
+    return reinterpret_cast<const Config*>(
+               &_Config_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(Config& a, Config& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Config* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Config* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Config* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Config>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const Config& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const Config& from) {
+    Config::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Config* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "lseqdb.Config";
+  }
+  protected:
+  explicit Config(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSelfReplicaIdFieldNumber = 1,
+    kMaxReplicaIdFieldNumber = 2,
+  };
+  // int32 self_replica_id = 1;
+  void clear_self_replica_id();
+  int32_t self_replica_id() const;
+  void set_self_replica_id(int32_t value);
+  private:
+  int32_t _internal_self_replica_id() const;
+  void _internal_set_self_replica_id(int32_t value);
+  public:
+
+  // int32 max_replica_id = 2;
+  void clear_max_replica_id();
+  int32_t max_replica_id() const;
+  void set_max_replica_id(int32_t value);
+  private:
+  int32_t _internal_max_replica_id() const;
+  void _internal_set_max_replica_id(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:lseqdb.Config)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t self_replica_id_;
+    int32_t max_replica_id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_lseqDb_2eproto;
+};
+// -------------------------------------------------------------------
+
 class SyncGetRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:lseqdb.SyncGetRequest) */ {
  public:
@@ -1545,7 +1708,7 @@ class SyncGetRequest final :
                &_SyncGetRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(SyncGetRequest& a, SyncGetRequest& b) {
     a.Swap(&b);
@@ -2552,6 +2715,50 @@ inline void DBItems::set_replica_id(int32_t value) {
 
 // -------------------------------------------------------------------
 
+// Config
+
+// int32 self_replica_id = 1;
+inline void Config::clear_self_replica_id() {
+  _impl_.self_replica_id_ = 0;
+}
+inline int32_t Config::_internal_self_replica_id() const {
+  return _impl_.self_replica_id_;
+}
+inline int32_t Config::self_replica_id() const {
+  // @@protoc_insertion_point(field_get:lseqdb.Config.self_replica_id)
+  return _internal_self_replica_id();
+}
+inline void Config::_internal_set_self_replica_id(int32_t value) {
+  
+  _impl_.self_replica_id_ = value;
+}
+inline void Config::set_self_replica_id(int32_t value) {
+  _internal_set_self_replica_id(value);
+  // @@protoc_insertion_point(field_set:lseqdb.Config.self_replica_id)
+}
+
+// int32 max_replica_id = 2;
+inline void Config::clear_max_replica_id() {
+  _impl_.max_replica_id_ = 0;
+}
+inline int32_t Config::_internal_max_replica_id() const {
+  return _impl_.max_replica_id_;
+}
+inline int32_t Config::max_replica_id() const {
+  // @@protoc_insertion_point(field_get:lseqdb.Config.max_replica_id)
+  return _internal_max_replica_id();
+}
+inline void Config::_internal_set_max_replica_id(int32_t value) {
+  
+  _impl_.max_replica_id_ = value;
+}
+inline void Config::set_max_replica_id(int32_t value) {
+  _internal_set_max_replica_id(value);
+  // @@protoc_insertion_point(field_set:lseqdb.Config.max_replica_id)
+}
+
+// -------------------------------------------------------------------
+
 // SyncGetRequest
 
 // int32 replica_id = 1;
@@ -2577,6 +2784,8 @@ inline void SyncGetRequest::set_replica_id(int32_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -47,6 +47,11 @@ message DBItems {
   int32 replica_id = 2;
 }
 
+message Config {
+  int32 self_replica_id = 1;
+  int32 max_replica_id = 2; // number of replicas in the cluster
+}
+
 service LSeqDatabase {
 //  Database API
   rpc GetValue(ReplicaKey) returns (Value) {}
@@ -54,6 +59,8 @@ service LSeqDatabase {
 //  Supports search only within one replica
   rpc SeekGet(SeekGetRequest) returns (DBItems) {}
   rpc GetReplicaEvents(EventsRequest) returns (DBItems) {}
+//  Info about cluster and replicas
+  rpc GetConfig(google.protobuf.Empty) returns (Config) {}
 
 //  System calls for synchronization
   rpc SyncGet_(SyncGetRequest) returns (LSeq) {}

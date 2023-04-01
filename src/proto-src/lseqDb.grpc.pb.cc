@@ -26,6 +26,7 @@ static const char* LSeqDatabase_method_names[] = {
   "/lseqdb.LSeqDatabase/Put",
   "/lseqdb.LSeqDatabase/SeekGet",
   "/lseqdb.LSeqDatabase/GetReplicaEvents",
+  "/lseqdb.LSeqDatabase/GetConfig",
   "/lseqdb.LSeqDatabase/SyncGet_",
   "/lseqdb.LSeqDatabase/SyncPut_",
 };
@@ -41,8 +42,9 @@ LSeqDatabase::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& chann
   , rpcmethod_Put_(LSeqDatabase_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_SeekGet_(LSeqDatabase_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_GetReplicaEvents_(LSeqDatabase_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SyncGet__(LSeqDatabase_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SyncPut__(LSeqDatabase_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetConfig_(LSeqDatabase_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SyncGet__(LSeqDatabase_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SyncPut__(LSeqDatabase_method_names[6], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status LSeqDatabase::Stub::GetValue(::grpc::ClientContext* context, const ::lseqdb::ReplicaKey& request, ::lseqdb::Value* response) {
@@ -137,6 +139,29 @@ void LSeqDatabase::Stub::async::GetReplicaEvents(::grpc::ClientContext* context,
   return result;
 }
 
+::grpc::Status LSeqDatabase::Stub::GetConfig(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::lseqdb::Config* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::google::protobuf::Empty, ::lseqdb::Config, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_GetConfig_, context, request, response);
+}
+
+void LSeqDatabase::Stub::async::GetConfig(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::lseqdb::Config* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::google::protobuf::Empty, ::lseqdb::Config, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetConfig_, context, request, response, std::move(f));
+}
+
+void LSeqDatabase::Stub::async::GetConfig(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::lseqdb::Config* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetConfig_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::lseqdb::Config>* LSeqDatabase::Stub::PrepareAsyncGetConfigRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::lseqdb::Config, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_GetConfig_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::lseqdb::Config>* LSeqDatabase::Stub::AsyncGetConfigRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncGetConfigRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 ::grpc::Status LSeqDatabase::Stub::SyncGet_(::grpc::ClientContext* context, const ::lseqdb::SyncGetRequest& request, ::lseqdb::LSeq* response) {
   return ::grpc::internal::BlockingUnaryCall< ::lseqdb::SyncGetRequest, ::lseqdb::LSeq, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_SyncGet__, context, request, response);
 }
@@ -227,6 +252,16 @@ LSeqDatabase::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       LSeqDatabase_method_names[4],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< LSeqDatabase::Service, ::google::protobuf::Empty, ::lseqdb::Config, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](LSeqDatabase::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::google::protobuf::Empty* req,
+             ::lseqdb::Config* resp) {
+               return service->GetConfig(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      LSeqDatabase_method_names[5],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< LSeqDatabase::Service, ::lseqdb::SyncGetRequest, ::lseqdb::LSeq, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](LSeqDatabase::Service* service,
              ::grpc::ServerContext* ctx,
@@ -235,7 +270,7 @@ LSeqDatabase::Service::Service() {
                return service->SyncGet_(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      LSeqDatabase_method_names[5],
+      LSeqDatabase_method_names[6],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< LSeqDatabase::Service, ::lseqdb::DBItems, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](LSeqDatabase::Service* service,
@@ -271,6 +306,13 @@ LSeqDatabase::Service::~Service() {
 }
 
 ::grpc::Status LSeqDatabase::Service::GetReplicaEvents(::grpc::ServerContext* context, const ::lseqdb::EventsRequest* request, ::lseqdb::DBItems* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status LSeqDatabase::Service::GetConfig(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::lseqdb::Config* response) {
   (void) context;
   (void) request;
   (void) response;

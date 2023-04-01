@@ -139,6 +139,20 @@ struct DBItemsDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DBItemsDefaultTypeInternal _DBItems_default_instance_;
+PROTOBUF_CONSTEXPR Config::Config(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.self_replica_id_)*/0
+  , /*decltype(_impl_.max_replica_id_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct ConfigDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ConfigDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ConfigDefaultTypeInternal() {}
+  union {
+    Config _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ConfigDefaultTypeInternal _Config_default_instance_;
 PROTOBUF_CONSTEXPR SyncGetRequest::SyncGetRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.replica_id_)*/0
@@ -153,7 +167,7 @@ struct SyncGetRequestDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SyncGetRequestDefaultTypeInternal _SyncGetRequest_default_instance_;
 }  // namespace lseqdb
-static ::_pb::Metadata file_level_metadata_lseqDb_2eproto[9];
+static ::_pb::Metadata file_level_metadata_lseqDb_2eproto[10];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_lseqDb_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_lseqDb_2eproto = nullptr;
 
@@ -235,6 +249,14 @@ const uint32_t TableStruct_lseqDb_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::lseqdb::DBItems, _impl_.items_),
   PROTOBUF_FIELD_OFFSET(::lseqdb::DBItems, _impl_.replica_id_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::lseqdb::Config, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::lseqdb::Config, _impl_.self_replica_id_),
+  PROTOBUF_FIELD_OFFSET(::lseqdb::Config, _impl_.max_replica_id_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::lseqdb::SyncGetRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -251,7 +273,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 47, 56, -1, sizeof(::lseqdb::SeekGetRequest)},
   { 59, -1, -1, sizeof(::lseqdb::DBItems_DbItem)},
   { 68, -1, -1, sizeof(::lseqdb::DBItems)},
-  { 76, -1, -1, sizeof(::lseqdb::SyncGetRequest)},
+  { 76, -1, -1, sizeof(::lseqdb::Config)},
+  { 84, -1, -1, sizeof(::lseqdb::SyncGetRequest)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -263,6 +286,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::lseqdb::_SeekGetRequest_default_instance_._instance,
   &::lseqdb::_DBItems_DbItem_default_instance_._instance,
   &::lseqdb::_DBItems_default_instance_._instance,
+  &::lseqdb::_Config_default_instance_._instance,
   &::lseqdb::_SyncGetRequest_default_instance_._instance,
 };
 
@@ -280,26 +304,29 @@ const char descriptor_table_protodef_lseqDb_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\030\003 \001(\rH\001\210\001\001B\006\n\004_keyB\010\n\006_limit\"x\n\007DBItems"
   "\022%\n\005items\030\001 \003(\0132\026.lseqdb.DBItems.DbItem\022"
   "\022\n\nreplica_id\030\002 \001(\005\0322\n\006DbItem\022\014\n\004lseq\030\001 "
-  "\001(\t\022\013\n\003key\030\002 \001(\t\022\r\n\005value\030\003 \001(\t\"$\n\016SyncG"
-  "etRequest\022\022\n\nreplica_id\030\001 \001(\0052\311\002\n\014LSeqDa"
-  "tabase\022/\n\010GetValue\022\022.lseqdb.ReplicaKey\032\r"
-  ".lseqdb.Value\"\000\022)\n\003Put\022\022.lseqdb.PutReque"
-  "st\032\014.lseqdb.LSeq\"\000\0224\n\007SeekGet\022\026.lseqdb.S"
-  "eekGetRequest\032\017.lseqdb.DBItems\"\000\022<\n\020GetR"
-  "eplicaEvents\022\025.lseqdb.EventsRequest\032\017.ls"
-  "eqdb.DBItems\"\000\0222\n\010SyncGet_\022\026.lseqdb.Sync"
-  "GetRequest\032\014.lseqdb.LSeq\"\000\0225\n\010SyncPut_\022\017"
-  ".lseqdb.DBItems\032\026.google.protobuf.Empty\""
-  "\000b\006proto3"
+  "\001(\t\022\013\n\003key\030\002 \001(\t\022\r\n\005value\030\003 \001(\t\"9\n\006Confi"
+  "g\022\027\n\017self_replica_id\030\001 \001(\005\022\026\n\016max_replic"
+  "a_id\030\002 \001(\005\"$\n\016SyncGetRequest\022\022\n\nreplica_"
+  "id\030\001 \001(\0052\200\003\n\014LSeqDatabase\022/\n\010GetValue\022\022."
+  "lseqdb.ReplicaKey\032\r.lseqdb.Value\"\000\022)\n\003Pu"
+  "t\022\022.lseqdb.PutRequest\032\014.lseqdb.LSeq\"\000\0224\n"
+  "\007SeekGet\022\026.lseqdb.SeekGetRequest\032\017.lseqd"
+  "b.DBItems\"\000\022<\n\020GetReplicaEvents\022\025.lseqdb"
+  ".EventsRequest\032\017.lseqdb.DBItems\"\000\0225\n\tGet"
+  "Config\022\026.google.protobuf.Empty\032\016.lseqdb."
+  "Config\"\000\0222\n\010SyncGet_\022\026.lseqdb.SyncGetReq"
+  "uest\032\014.lseqdb.LSeq\"\000\0225\n\010SyncPut_\022\017.lseqd"
+  "b.DBItems\032\026.google.protobuf.Empty\"\000b\006pro"
+  "to3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_lseqDb_2eproto_deps[1] = {
   &::descriptor_table_google_2fprotobuf_2fempty_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_lseqDb_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_lseqDb_2eproto = {
-    false, false, 929, descriptor_table_protodef_lseqDb_2eproto,
+    false, false, 1043, descriptor_table_protodef_lseqDb_2eproto,
     "lseqDb.proto",
-    &descriptor_table_lseqDb_2eproto_once, descriptor_table_lseqDb_2eproto_deps, 1, 9,
+    &descriptor_table_lseqDb_2eproto_once, descriptor_table_lseqDb_2eproto_deps, 1, 10,
     schemas, file_default_instances, TableStruct_lseqDb_2eproto::offsets,
     file_level_metadata_lseqDb_2eproto, file_level_enum_descriptors_lseqDb_2eproto,
     file_level_service_descriptors_lseqDb_2eproto,
@@ -2426,6 +2453,217 @@ void DBItems::InternalSwap(DBItems* other) {
 
 // ===================================================================
 
+class Config::_Internal {
+ public:
+};
+
+Config::Config(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:lseqdb.Config)
+}
+Config::Config(const Config& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  Config* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.self_replica_id_){}
+    , decltype(_impl_.max_replica_id_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.self_replica_id_, &from._impl_.self_replica_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.max_replica_id_) -
+    reinterpret_cast<char*>(&_impl_.self_replica_id_)) + sizeof(_impl_.max_replica_id_));
+  // @@protoc_insertion_point(copy_constructor:lseqdb.Config)
+}
+
+inline void Config::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.self_replica_id_){0}
+    , decltype(_impl_.max_replica_id_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+Config::~Config() {
+  // @@protoc_insertion_point(destructor:lseqdb.Config)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void Config::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void Config::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void Config::Clear() {
+// @@protoc_insertion_point(message_clear_start:lseqdb.Config)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&_impl_.self_replica_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.max_replica_id_) -
+      reinterpret_cast<char*>(&_impl_.self_replica_id_)) + sizeof(_impl_.max_replica_id_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* Config::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 self_replica_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.self_replica_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 max_replica_id = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.max_replica_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* Config::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:lseqdb.Config)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 self_replica_id = 1;
+  if (this->_internal_self_replica_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_self_replica_id(), target);
+  }
+
+  // int32 max_replica_id = 2;
+  if (this->_internal_max_replica_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_max_replica_id(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:lseqdb.Config)
+  return target;
+}
+
+size_t Config::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:lseqdb.Config)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 self_replica_id = 1;
+  if (this->_internal_self_replica_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_self_replica_id());
+  }
+
+  // int32 max_replica_id = 2;
+  if (this->_internal_max_replica_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_max_replica_id());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Config::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    Config::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Config::GetClassData() const { return &_class_data_; }
+
+
+void Config::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<Config*>(&to_msg);
+  auto& from = static_cast<const Config&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:lseqdb.Config)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_self_replica_id() != 0) {
+    _this->_internal_set_self_replica_id(from._internal_self_replica_id());
+  }
+  if (from._internal_max_replica_id() != 0) {
+    _this->_internal_set_max_replica_id(from._internal_max_replica_id());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void Config::CopyFrom(const Config& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:lseqdb.Config)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Config::IsInitialized() const {
+  return true;
+}
+
+void Config::InternalSwap(Config* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(Config, _impl_.max_replica_id_)
+      + sizeof(Config::_impl_.max_replica_id_)
+      - PROTOBUF_FIELD_OFFSET(Config, _impl_.self_replica_id_)>(
+          reinterpret_cast<char*>(&_impl_.self_replica_id_),
+          reinterpret_cast<char*>(&other->_impl_.self_replica_id_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata Config::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_lseqDb_2eproto_getter, &descriptor_table_lseqDb_2eproto_once,
+      file_level_metadata_lseqDb_2eproto[8]);
+}
+
+// ===================================================================
+
 class SyncGetRequest::_Internal {
  public:
 };
@@ -2599,7 +2837,7 @@ void SyncGetRequest::InternalSwap(SyncGetRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata SyncGetRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_lseqDb_2eproto_getter, &descriptor_table_lseqDb_2eproto_once,
-      file_level_metadata_lseqDb_2eproto[8]);
+      file_level_metadata_lseqDb_2eproto[9]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -2636,6 +2874,10 @@ Arena::CreateMaybeMessage< ::lseqdb::DBItems_DbItem >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::lseqdb::DBItems*
 Arena::CreateMaybeMessage< ::lseqdb::DBItems >(Arena* arena) {
   return Arena::CreateMessageInternal< ::lseqdb::DBItems >(arena);
+}
+template<> PROTOBUF_NOINLINE ::lseqdb::Config*
+Arena::CreateMaybeMessage< ::lseqdb::Config >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::lseqdb::Config >(arena);
 }
 template<> PROTOBUF_NOINLINE ::lseqdb::SyncGetRequest*
 Arena::CreateMaybeMessage< ::lseqdb::SyncGetRequest >(Arena* arena) {
